@@ -1,0 +1,59 @@
+#include <CharUI/Component/Text.h>
+#include <ranges>
+
+cui::Text::Text(std::string_view bytesView)
+{
+    auto split_view = bytesView | std::views::split('\n');
+    for (auto&& part : split_view) {
+        lines.emplace_back(part.begin(), part.end());
+    }
+}
+
+cui::Text::Text(const std::vector<String>& lines)
+    : lines(lines) {}
+
+int32_t cui::Text::getWidth() const
+{
+    int32_t maxWidth = 0;
+    for (auto& line : lines) {
+        maxWidth = std::max(static_cast<int32_t>(line.getWidth()), maxWidth);
+    }
+    return maxWidth;
+}
+
+int32_t cui::Text::getHeight() const
+{
+    return static_cast<int32_t>(lines.size());
+}
+
+std::vector<cui::String> cui::Text::getData() const
+{
+    return lines;
+}
+
+void cui::Text::set(const std::vector<String>& lines)
+{
+    this->lines = lines;
+}
+
+std::vector<cui::String>& cui::Text::get()
+{
+    return lines;
+}
+
+const std::vector<cui::String>& cui::Text::get() const
+{
+    return lines;
+}
+
+void cui::Text::pushBack(const String& newLine) {
+    lines.push_back(newLine);
+}
+
+cui::String& cui::Text::operator[](size_t index) {
+    return lines.at(index);
+}
+
+const cui::String& cui::Text::operator[](size_t index) const {
+    return lines.at(index);
+}
