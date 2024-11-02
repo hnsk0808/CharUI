@@ -92,19 +92,28 @@ int main() {
             ),
             fpsText
         ));
-    grid->set(0, 1,
+    grid->set(1, 0,
         cui::vBox(
             cui::text("CharUI是跨平台的控制台UI库\nCharUI支持UTF8字符😊"),
-            rainbowText,
-            cui::image("../../asserts/textures/apple.png")
+            rainbowText
         ));
 
     cui::Page page;
     page.set(0, 0, grid);
+    page.set(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), 0, cui::image("../../asserts/textures/apple.png"));
     page.onUpdate.connect([&]() { if (progressBar1->isDone()) { progressBar1->set(0); } else { progressBar1->set(progressBar1->get() + 10); } });
     page.onUpdate.connect([&]() { if (progressBar2->isDone()) { progressBar2->set(0); } else { progressBar2->set(progressBar2->get() + 10); } });
     page.onUpdate.connect([&]() { if (progressBar3->isDone()) { progressBar3->set(0); } else { progressBar3->set(progressBar3->get() + 10); } });
     page.onUpdate.connect(rainbowText, &RainbowText::update);
+    page.onUpdate.connect([&]() {
+        static int32_t offset = 0;
+        page.erase(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), offset);
+        page.set(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), ++offset, cui::image("../../asserts/textures/apple.png"));
+        if (offset == 30) {
+            page.erase(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), offset);
+            offset = -30;
+        }
+        });
 
     auto lastTime = std::chrono::high_resolution_clock::now();
     int fps = 0;
@@ -122,6 +131,7 @@ int main() {
 
     while (true) {
         page.update();
+        std::this_thread::sleep_for(100ms);
     }
     return 0;
 }

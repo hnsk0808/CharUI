@@ -5,7 +5,7 @@ namespace cui
 {
 
 struct LogicPos {
-    int32_t row, col;
+    int32_t col, row;
 };
 static bool operator<(LogicPos lhs, LogicPos rhs) {
     return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
@@ -16,7 +16,7 @@ static bool operator==(LogicPos lhs, LogicPos rhs) {
 
 struct Pos
 {
-    int row, col;
+    int col, row;
     int depth;
 };
 static bool operator<(Pos lhs, Pos rhs) {
