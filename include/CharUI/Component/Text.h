@@ -6,13 +6,16 @@ namespace cui
 
 class Text : public Component {
 public:
-    Text(std::string_view bytesView);
+    Text(BytesView bytesView);
+    Text(const char* str);
+    Text(const String& str);
     Text(const std::vector<String>& lines);
 
     int32_t getWidth() const override;
     int32_t getHeight() const override;
     std::vector<String> getData() const override;
 
+    void set(BytesView bytesView);
     void set(const std::vector<String>& lines);
     std::vector<String>& get();
     const std::vector<String>& get() const;

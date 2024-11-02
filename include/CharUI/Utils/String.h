@@ -34,7 +34,7 @@ public:
     void insert(size_t index, const String& other);
     // void erase(size_t first, size_t last);
     
-    String takeW(size_t w) const;
+    String takeW(size_t index, size_t w) const;
 
     void pushBackDefaultRGB();
     void pushBackRGB(int r, int g, int b);

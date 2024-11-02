@@ -1,4 +1,5 @@
 #include <CharUI/CharUI.h>
+#include <CharUI/Utils/Terminal.h>
 #include <thread>
 #include <functional>
 #include <fstream>
@@ -69,9 +70,10 @@ int main() {
     auto progressBar2 = cui::progressBar(20);
     auto progressBar3 = cui::progressBar(25);
     auto rainbowText = std::make_shared<RainbowText>("CharUI支持彩色字符");
-    
-    cui::Page page;
-    page.set(0, 0,
+    auto fpsText = cui::text("FPS: 0");
+
+    auto grid = cui::grid();
+    grid->set(0, 0,
         cui::vBox(
             cui::hBox(
                 cui::image("../../asserts/textures/diamond_sword.png"),
@@ -84,29 +86,42 @@ int main() {
                 cui::text("   ")
             ),
             cui::vBox(
-                cui::text("progress bars:"),
-                cui::vBox(
-                    progressBar1,
-                    progressBar2,
-                    progressBar3
-                )
-            )
+                progressBar1,
+                progressBar2,
+                progressBar3
+            ),
+            fpsText
         ));
-    page.set(0, 1,
+    grid->set(0, 1,
         cui::vBox(
             cui::text("CharUI是跨平台的控制台UI库\nCharUI支持UTF8字符😊"),
             rainbowText,
             cui::image("../../asserts/textures/apple.png")
         ));
 
+    cui::Page page;
+    page.set(0, 0, grid);
     page.onUpdate.connect([&]() { if (progressBar1->isDone()) { progressBar1->set(0); } else { progressBar1->set(progressBar1->get() + 10); } });
     page.onUpdate.connect([&]() { if (progressBar2->isDone()) { progressBar2->set(0); } else { progressBar2->set(progressBar2->get() + 10); } });
     page.onUpdate.connect([&]() { if (progressBar3->isDone()) { progressBar3->set(0); } else { progressBar3->set(progressBar3->get() + 10); } });
     page.onUpdate.connect(rainbowText, &RainbowText::update);
 
+    auto lastTime = std::chrono::high_resolution_clock::now();
+    int fps = 0;
+    int frameCount = 0;
+    page.onUpdate.connect([&]() {
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        frameCount++;
+        if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastTime).count() >= 1) {
+            fps = frameCount; 
+            frameCount = 0; 
+            lastTime = currentTime;
+            fpsText->set(cui::Bytes("FPS: ") + std::to_string(fps));
+        }
+        });
+
     while (true) {
         page.update();
-        std::this_thread::sleep_for(200ms);
     }
     return 0;
 }

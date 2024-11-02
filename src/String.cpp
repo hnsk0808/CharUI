@@ -84,23 +84,34 @@ void cui::String::insert(size_t index, const String& other)
     chars.insertByte(it.p - chars.begin(), other.chars.getBytes().substr(0, other.pushBackPos()).data());
 }
 
-cui::String cui::String::takeW(size_t w) const
+cui::String cui::String::takeW(size_t index, size_t w) const
 {
+    if (index > chars.getWidth() || w == 0) {
+        return "";
+    }
     auto it = chars.begin();
+    Bytes ret = "";
+    {
+        size_t i = 0;
+        for (; i < index; i += charWidth(it), ++it);
+        if (i > index) {
+            ret = Bytes(i - index, ' ');
+        }
+    }
+    auto first = it;
     auto last = it;
-    size_t currentWidth = 0;
+    size_t currentWidth = index;
     for (; (currentWidth < w) && (it != chars.end()); ++it) {
         last = it;
         currentWidth += charWidth(it);
     }
     if (currentWidth == w) {
-        return { chars.begin().p, it.p };
+        return (ret + Bytes(first.p, it.p)).data();
     }
     else if (currentWidth > w) {
         currentWidth -= charWidth(last);
     }
-    Bytes ret(chars.begin().p, last.p);
-    ret += Bytes(w - currentWidth, getPaddingChar());
+    ret += Bytes(first.p, last.p) + Bytes(w - currentWidth, getPaddingChar());
     return { ret.data() };
 }
 

@@ -1,12 +1,18 @@
 #include <CharUI/Component/Text.h>
 #include <ranges>
 
-cui::Text::Text(std::string_view bytesView)
+cui::Text::Text(BytesView bytesView)
 {
-    auto split_view = bytesView | std::views::split('\n');
-    for (auto&& part : split_view) {
-        lines.emplace_back(part.begin(), part.end());
-    }
+    set(bytesView);
+}
+
+cui::Text::Text(const char* str)
+    : Text(BytesView(str))
+{}
+
+cui::Text::Text(const String& str)
+{
+    lines.push_back(str);
 }
 
 cui::Text::Text(const std::vector<String>& lines)
@@ -29,6 +35,15 @@ int32_t cui::Text::getHeight() const
 std::vector<cui::String> cui::Text::getData() const
 {
     return lines;
+}
+
+void cui::Text::set(BytesView bytesView)
+{
+    lines.clear();
+    auto split_view = bytesView | std::views::split('\n');
+    for (auto&& part : split_view) {
+        lines.emplace_back(part.begin(), part.end());
+    }
 }
 
 void cui::Text::set(const std::vector<String>& lines)

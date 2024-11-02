@@ -1,5 +1,6 @@
 #pragma once
-#include "Component/Grid.h"
+#include "Component/Canvas.h"
+#include "Utils/Pos.h"
 #include "Utils/Signal.h"
 #include <map>
 #include <memory>
@@ -26,7 +27,8 @@ public:
     Signal<> onUpdate;
 
 private:
-    Grid grid;
+    std::map<LogicPos, std::shared_ptr<Component>> components;
+    Canvas canvas = Canvas(0, 0);
     int32_t tWidth = 0;
     int32_t tHeight = 0;
 };
