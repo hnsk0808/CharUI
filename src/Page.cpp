@@ -26,6 +26,7 @@ void cui::Page::update()
         canvas.resize(newWidth, newHeight);
     }
 
+    canvas.clear();
     for (auto&& [p, c] : components) {
         canvas.set(p.col, p.row, c);
     }

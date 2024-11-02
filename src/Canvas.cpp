@@ -22,6 +22,7 @@ std::vector<cui::String> cui::Canvas::getData() const
 
 void cui::Canvas::clear()
 {
+    data.clear();
     data.resize(height, String(width, getPaddingChar()));
 }
 
@@ -56,9 +57,7 @@ void cui::Canvas::set(int32_t x, int32_t y, const Component& src)
                 content = srcData[i];
             }
             auto before = data[static_cast<size_t>(i + y)].takeW(0, x);
-            auto before_ = before.getWidth();
             auto after = data[static_cast<size_t>(i + y)].takeW(static_cast<size_t>(x + srcWidth), width);
-            auto after_ = after.getWidth();
             data[static_cast<size_t>(i + y)] = before + content + after;
         }
         else {
