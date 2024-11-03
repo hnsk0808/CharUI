@@ -57,7 +57,7 @@ void cui::Canvas::set(int32_t x, int32_t y, const Component& src)
                 content = srcData[i];
             }
             auto before = data[static_cast<size_t>(i + y)].takeW(0, x);
-            auto after = data[static_cast<size_t>(i + y)].takeW(static_cast<size_t>(x + srcWidth), width);
+            auto after = data[static_cast<size_t>(i + y)].takeW(static_cast<size_t>(x + srcWidth), static_cast<size_t>(width - x - srcWidth));
             data[static_cast<size_t>(i + y)] = before + content + after;
         }
         else {
@@ -68,7 +68,7 @@ void cui::Canvas::set(int32_t x, int32_t y, const Component& src)
             else {
                 content = srcData[i].takeW(-x, srcData[i].getWidth());
             }
-            auto after = data[static_cast<size_t>(i + y)].takeW(static_cast<size_t>(x + srcWidth), width);
+            auto after = data[static_cast<size_t>(i + y)].takeW(static_cast<size_t>(x + srcWidth), static_cast<size_t>(width - x - srcWidth));
             data[static_cast<size_t>(i + y)] = content + after;
         }
     }

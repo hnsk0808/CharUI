@@ -42,7 +42,7 @@ size_t cui::charWidth(const char* src)
     return wts8width(src, ret);
 }
 
-cui::Bytes cui::colorAnsiEscapeCode(int mod, int r, int g, int b)
+cui::Bytes cui::RGBToANSIEscapeCode(int mod, int r, int g, int b)
 {
     return "\x1b[" + std::to_string(mod) + ";2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m";
 }

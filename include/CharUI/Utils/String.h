@@ -4,10 +4,8 @@
 
 namespace cui {
 
-// 默认颜色
 constexpr BytesView defaultColor = "\x1b[0m";
 
-// 一个没有\n \t，结尾会自动添加“恢复默认颜色”的字符串
 class String {
 public:
     String();
@@ -35,6 +33,7 @@ public:
     // void erase(size_t first, size_t last);
     
     String takeW(size_t index, size_t w) const;
+    String replaceW(size_t index, size_t w, const String& other) const;
 
     void pushBackDefaultRGB();
     void pushBackRGB(int r, int g, int b);

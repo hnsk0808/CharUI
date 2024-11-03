@@ -90,29 +90,29 @@ cui::String cui::String::takeW(size_t index, size_t w) const
         return "";
     }
     auto it = chars.begin();
-    Bytes ret = "";
-    {
-        size_t i = 0;
-        for (; i < index; i += charWidth(it), ++it);
-        if (i > index) {
-            ret = Bytes(i - index, ' ');
-        }
+    Bytes ret;
+    size_t cW = 0;
+    for (; cW < index; cW += charWidth(it), ++it);
+    if (cW > index) {
+        ret = Bytes(cW - index, ' ');
     }
-    auto first = it;
-    auto last = it;
-    size_t currentWidth = index;
-    for (; (currentWidth < w) && (it != chars.end()); ++it) {
-        last = it;
-        currentWidth += charWidth(it);
+    auto first = it, last = it;
+    for (cW = 0; (it != chars.end()) && (cW < w); last = it, cW += charWidth(it), ++it);
+    if (cW == w) {
+        ret += Bytes(first.p, it.p);
     }
-    if (currentWidth == w) {
-        return (ret + Bytes(first.p, it.p)).data();
+    else if (cW > w) {
+        ret += Bytes(first.p, last.p) + Bytes(cW - w, getPaddingChar());
     }
-    else if (currentWidth > w) {
-        currentWidth -= charWidth(last);
+    else if (cW < w) {
+        ret += Bytes(first.p, it.p) + Bytes(w - cW, getPaddingChar());
     }
-    ret += Bytes(first.p, last.p) + Bytes(w - currentWidth, getPaddingChar());
     return { ret.data() };
+}
+
+cui::String cui::String::replaceW(size_t index, size_t w, const String& other) const
+{
+    return String();
 }
 
 void cui::String::pushBackDefaultRGB()
@@ -122,12 +122,12 @@ void cui::String::pushBackDefaultRGB()
 
 void cui::String::pushBackRGB(int r, int g, int b)
 {
-    append(colorAnsiEscapeCode(38, r, g, b).data());
+    append(RGBToANSIEscapeCode(38, r, g, b).data());
 }
 
 void cui::String::pushBackBackgroundRGB(int r, int g, int b)
 {
-    append(colorAnsiEscapeCode(48, r, g, b).data());
+    append(RGBToANSIEscapeCode(48, r, g, b).data());
 }
 
 void cui::String::insertDefaultRGB(size_t index)
@@ -137,12 +137,12 @@ void cui::String::insertDefaultRGB(size_t index)
 
 void cui::String::insertRGB(size_t index, int r, int g, int b)
 {
-    insert(index, colorAnsiEscapeCode(38, r, g, b).data());
+    insert(index, RGBToANSIEscapeCode(38, r, g, b).data());
 }
 
 void cui::String::insertBackgroundRGB(size_t index, int r, int g, int b)
 {
-    insert(index, colorAnsiEscapeCode(48, r, g, b).data());
+    insert(index, RGBToANSIEscapeCode(48, r, g, b).data());
 }
 
 void cui::String::setDefaultRGB(size_t index)
@@ -152,12 +152,12 @@ void cui::String::setDefaultRGB(size_t index)
 
 void cui::String::setRGB(size_t index, int r, int g, int b)
 {
-    __setRGB(index, colorAnsiEscapeCode(38, r, g, b).data());
+    __setRGB(index, RGBToANSIEscapeCode(38, r, g, b).data());
 }
 
 void cui::String::setBackgroundRGB(size_t index, int r, int g, int b)
 {
-    __setRGB(index, colorAnsiEscapeCode(48, r, g, b).data());
+    __setRGB(index, RGBToANSIEscapeCode(48, r, g, b).data());
 }
 
 cui::String cui::String::operator+(const String& other)

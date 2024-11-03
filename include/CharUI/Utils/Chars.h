@@ -6,15 +6,10 @@ namespace cui {
 using Bytes = std::string;
 using BytesView = std::string_view;
 
-// 返回字符串中第一个UTF-8字符/ANSI转义序列的字节数
 size_t charSize(const char* src);
-// 返回字符串中第一个UTF-8字符/ANSI转义序列的宽度
 size_t charWidth(const char* src);
-// rgb转换为ANSI转义序列
-Bytes colorAnsiEscapeCode(int mod, int r, int g, int b);
+Bytes RGBToANSIEscapeCode(int mod, int r, int g, int b);
 
-// 包含ANSI转义字符，UTF-8字符
-// 不包含\n \t
 class Chars {
 public:
     Chars();
@@ -62,7 +57,6 @@ public:
 private:
     Bytes bytes;
 
-    // 移除\n \t
     void removeBadChar();
 };
 
