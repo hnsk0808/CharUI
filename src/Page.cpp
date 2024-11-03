@@ -28,7 +28,7 @@ void cui::Page::update()
 
     canvas.clear();
     for (auto&& [p, c] : components) {
-        canvas.set(p.col, p.row, c);
+        canvas.set(p.x, p.y, c);
     }
 
     Bytes buffer = "";
@@ -38,14 +38,14 @@ void cui::Page::update()
     printf("\x1B[0;0H%s", buffer.data());
 }
 
-void cui::Page::set(int32_t x, int32_t y, std::shared_ptr<Component> src)
+void cui::Page::set(int32_t x, int32_t y, int32_t z, std::shared_ptr<Component> src)
 {
-    components[{ x, y }] = src;
+    components[{ x, y, z }] = src;
 }
 
-void cui::Page::erase(int32_t x, int32_t y)
+void cui::Page::erase(int32_t x, int32_t y, int32_t z)
 {
-    components.erase({ x, y });
+    components.erase({ x, y, z });
 }
 
 void cui::Page::clear()
@@ -53,12 +53,12 @@ void cui::Page::clear()
     components.clear();
 }
 
-std::shared_ptr<cui::Component> cui::Page::get(int32_t x, int32_t y)
+std::shared_ptr<cui::Component> cui::Page::get(int32_t x, int32_t y, int32_t z)
 {
-    return components.at({ x, y });
+    return components.at({ x, y, z });
 }
 
-std::shared_ptr<const cui::Component> cui::Page::get(int32_t x, int32_t y) const
+std::shared_ptr<const cui::Component> cui::Page::get(int32_t x, int32_t y, int32_t z) const
 {
-    return components.at({ x, y });
+    return components.at({ x, y, z });
 }

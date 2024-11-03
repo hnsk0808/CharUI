@@ -18,16 +18,16 @@ public:
 
     void update();
 
-    void set(int32_t x, int32_t y, std::shared_ptr<Component> src);
-    void erase(int32_t x, int32_t y);
+    void set(int32_t x, int32_t y, int32_t z, std::shared_ptr<Component> src);
+    void erase(int32_t x, int32_t y, int32_t z);
     void clear();
-    std::shared_ptr<Component> get(int32_t x, int32_t y);
-    std::shared_ptr<const Component> get(int32_t x, int32_t y) const;
+    std::shared_ptr<Component> get(int32_t x, int32_t y, int32_t z);
+    std::shared_ptr<const Component> get(int32_t x, int32_t y, int32_t z) const;
 
     Signal<> onUpdate;
 
 private:
-    std::map<LogicPos, std::shared_ptr<Component>> components;
+    std::map<Pos, std::shared_ptr<Component>> components;
     Canvas canvas = Canvas(0, 0);
     int32_t tWidth = 0;
     int32_t tHeight = 0;

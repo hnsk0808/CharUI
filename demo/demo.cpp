@@ -71,6 +71,7 @@ int main() {
     auto progressBar3 = cui::progressBar(25);
     auto rainbowText = std::make_shared<RainbowText>("CharUI支持彩色字符");
     auto fpsText = cui::text("FPS: 0");
+    auto apple = cui::image("../../asserts/textures/apple.png");
 
     auto grid = cui::grid();
     grid->set(0, 0,
@@ -99,18 +100,18 @@ int main() {
         ));
 
     cui::Page page;
-    page.set(0, 0, grid);
-    page.set(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), 0, cui::image("../../asserts/textures/apple.png"));
+    page.set(0, 0, 0, grid);
+    page.set(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), 0, 0, apple);
     page.onUpdate.connect([&]() { if (progressBar1->isDone()) { progressBar1->set(0); } else { progressBar1->set(progressBar1->get() + 10); } });
     page.onUpdate.connect([&]() { if (progressBar2->isDone()) { progressBar2->set(0); } else { progressBar2->set(progressBar2->get() + 10); } });
     page.onUpdate.connect([&]() { if (progressBar3->isDone()) { progressBar3->set(0); } else { progressBar3->set(progressBar3->get() + 10); } });
     page.onUpdate.connect(rainbowText, &RainbowText::update);
     page.onUpdate.connect([&]() {
         static int32_t offset = 0;
-        page.erase(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), offset);
-        page.set(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), ++offset, cui::image("../../asserts/textures/apple.png"));
+        page.erase(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), offset, 0);
+        page.set(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), ++offset, 0, apple);
         if (offset == 30) {
-            page.erase(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), offset);
+            page.erase(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), offset, 0);
             offset = -30;
         }
         });

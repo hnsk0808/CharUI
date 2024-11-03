@@ -5,31 +5,30 @@ namespace cui
 {
 
 struct LogicPos {
-    int32_t col, row;
+    int32_t x, y;
 };
 static bool operator<(LogicPos lhs, LogicPos rhs) {
-    return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
+    return (lhs.y < rhs.y) || (lhs.y == rhs.y && lhs.x < rhs.x);
 }
 static bool operator==(LogicPos lhs, LogicPos rhs) {
-    return (lhs.row == rhs.row) && (lhs.col == rhs.col);
+    return (lhs.y == rhs.y) && (lhs.x == rhs.x);
 }
 
 struct Pos
 {
-    int col, row;
-    int depth;
+    int32_t x, y, z;
 };
 static bool operator<(Pos lhs, Pos rhs) {
-    if (lhs.depth < rhs.depth) {
+    if (lhs.z < rhs.z) {
         return false;
     }
-    else if (lhs.depth > rhs.depth) {
+    else if (lhs.z > rhs.z) {
         return true;
     }
-    return (lhs.row < rhs.row) || (lhs.row == rhs.row && lhs.col < rhs.col);
+    return (lhs.y < rhs.y) || (lhs.y == rhs.y && lhs.x < rhs.x);
 }
 static bool operator==(Pos lhs, Pos rhs) {
-    return (lhs.row == rhs.row) && (lhs.col == rhs.col) && (lhs.depth == rhs.depth);
+    return (lhs.y == rhs.y) && (lhs.x == rhs.x) && (lhs.z == rhs.z);
 }
 
 }

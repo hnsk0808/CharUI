@@ -5,7 +5,7 @@ int32_t cui::Grid::getWidth() const
 {
     std::map<int, int32_t> lineWidthList;
     for (auto& [p, c] : components) {
-        lineWidthList[p.col] = std::max(lineWidthList[p.col], c->getWidth());
+        lineWidthList[p.x] = std::max(lineWidthList[p.x], c->getWidth());
     }
     int32_t ret = 0;
     for (auto&& [_, w] : lineWidthList) {
@@ -18,7 +18,7 @@ int32_t cui::Grid::getHeight() const
 {
     std::map<int, int32_t> lineHeightList;
     for (auto& [p, c] : components) {
-        lineHeightList[p.row] = std::max(lineHeightList[p.row], c->getHeight());
+        lineHeightList[p.y] = std::max(lineHeightList[p.y], c->getHeight());
     }
     int32_t ret = 0;
     for (auto&& [_, h] : lineHeightList) {
@@ -33,19 +33,19 @@ std::vector<cui::String> cui::Grid::getData() const
     std::map<int, int32_t> lineWidthList;
     std::map<int, int32_t> lineHeightList;
     for (auto& [p, c] : components) {
-        lineWidthList[p.col] = std::max(lineWidthList[p.col], c->getWidth());
-        lineHeightList[p.row] = std::max(lineHeightList[p.row], c->getHeight());
+        lineWidthList[p.x] = std::max(lineWidthList[p.x], c->getWidth());
+        lineHeightList[p.y] = std::max(lineHeightList[p.y], c->getHeight());
     }
     for (auto&& [pos, c] : components) {
         int32_t height = c->getHeight();
         int32_t width = c->getWidth();
         auto data = c->getData();
 
-        int32_t lineHeight = lineHeightList.at(pos.row);
-        int32_t lineWidth = lineWidthList.at(pos.col);
+        int32_t lineHeight = lineHeightList.at(pos.y);
+        int32_t lineWidth = lineWidthList.at(pos.x);
 
         int32_t yOffset = 0;
-        for (int i = 0; i < pos.row; ++i) {
+        for (int i = 0; i < pos.y; ++i) {
             if (lineHeightList.find(i) != lineHeightList.end()) {
                 yOffset += lineHeightList.at(i);
             }
