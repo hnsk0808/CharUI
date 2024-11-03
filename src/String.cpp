@@ -114,9 +114,21 @@ cui::String cui::String::takeW(size_t index, size_t w) const
     return ret;
 }
 
-cui::String cui::String::replaceW(size_t index, size_t w, const String& other) const
+cui::String cui::String::replaceW(size_t index, const String& other) const
 {
-    return String();
+    if (index > chars.getWidth()) {
+        return "";
+    }
+    auto width = getWidth();
+    auto otherWidth = other.getWidth();
+    auto before = takeW(0, index);
+    if (otherWidth + index > width) {
+        return before + other.takeW(0, width - index);
+    }
+    else {
+        auto after = takeW(index + otherWidth, width - index - otherWidth);
+        return before + other + after;
+    }
 }
 
 void cui::String::pushBackDefaultRGB()

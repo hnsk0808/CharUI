@@ -34,7 +34,7 @@ public:
     // void erase(size_t first, size_t last);
     
     String takeW(size_t index, size_t w) const;
-    String replaceW(size_t index, size_t w, const String& other) const;
+    String replaceW(size_t index, const String& other) const;
 
     void pushBackDefaultRGB();
     void pushBackRGB(int r, int g, int b);

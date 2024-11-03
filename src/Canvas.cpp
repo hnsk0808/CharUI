@@ -48,29 +48,16 @@ void cui::Canvas::set(int32_t x, int32_t y, const Component& src)
 
     if (x >= 0) {
         for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
-            auto srcLineWidth = srcData[i].getWidth();
-            auto& dstLine = data[static_cast<size_t>(i + y)];
-            auto before = dstLine.takeW(0, x);
-            if (srcLineWidth + x > width) {
-                dstLine = before + srcData[i].takeW(0, static_cast<size_t>(width - x));
-            }
-            else {
-                auto after = dstLine.takeW(static_cast<size_t>(x + srcLineWidth), static_cast<size_t>(width - x) - srcLineWidth);
-                dstLine = before + srcData[i] + after;
-            }
+            data[static_cast<size_t>(i + y)] = data[static_cast<size_t>(i + y)].replaceW(x, srcData[i]);
         }
     }
     else {
         for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
             auto srcLineWidth = srcData[i].getWidth();
-            auto& dstLine = data[static_cast<size_t>(i + y)];
-            if (srcLineWidth + x > width) {
-                dstLine = srcData[i].takeW(-x, width);
+            if (x + srcLineWidth < 0) {
+                continue;
             }
-            else {
-                auto after = dstLine.takeW(static_cast<size_t>(x + srcLineWidth), static_cast<size_t>(width - x) - srcLineWidth);
-                dstLine = srcData[i].takeW(-x, srcData[i].getWidth()) + after;
-            }
+            data[static_cast<size_t>(i + y)] = data[static_cast<size_t>(i + y)].replaceW(0, srcData[i].takeW(-x, srcLineWidth + x));
         }
     }
 }
