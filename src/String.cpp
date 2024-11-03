@@ -14,11 +14,15 @@ cui::String::String(const Chars & chars)
 {}
 
 cui::String::String(const char* bytes)
-    : chars((Bytes(bytes) + Bytes(defaultColor)).c_str())
+    : String(Bytes(bytes))
 {}
 
-cui::String::String(BytesView bytes)
-    : String(bytes.data())
+cui::String::String(const Bytes& bytes)
+    : chars((bytes + Bytes(defaultColor)).data())
+{}
+
+cui::String::String(BytesView bytesView)
+    : String(Bytes(bytesView))
 {}
 
 cui::String::String(size_t count, char c)
@@ -107,7 +111,7 @@ cui::String cui::String::takeW(size_t index, size_t w) const
     else if (cW < w) {
         ret += Bytes(first.p, it.p) + Bytes(w - cW, getPaddingChar());
     }
-    return { ret.data() };
+    return ret;
 }
 
 cui::String cui::String::replaceW(size_t index, size_t w, const String& other) const

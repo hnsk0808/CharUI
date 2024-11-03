@@ -12,7 +12,8 @@ public:
     String(const String& str);
     String(const Chars& chars);
     String(const char* bytes);
-    String(BytesView bytes);
+    String(const Bytes& bytes);
+    String(BytesView bytesView);
     String(size_t count, char c);
 
     template<std::input_iterator Iter>

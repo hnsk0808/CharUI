@@ -39,7 +39,6 @@ void cui::Canvas::set(int32_t x, int32_t y, const Component& src)
         return;
     }
 
-    auto srcWidth = src.getWidth();
     auto srcHeight = src.getHeight();
     auto srcData = src.getData();
 
@@ -47,29 +46,31 @@ void cui::Canvas::set(int32_t x, int32_t y, const Component& src)
         srcHeight = height - (y >= 0 ? y : 0);
     }
 
-    for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
-        if (x >= 0) {
-            String content = "";
-            if (srcData[i].getWidth() + x > width) {
-                content = srcData[i].takeW(0, static_cast<size_t>(width - x));
+    if (x >= 0) {
+        for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
+            auto srcLineWidth = srcData[i].getWidth();
+            auto& dstLine = data[static_cast<size_t>(i + y)];
+            auto before = dstLine.takeW(0, x);
+            if (srcLineWidth + x > width) {
+                dstLine = before + srcData[i].takeW(0, static_cast<size_t>(width - x));
             }
             else {
-                content = srcData[i];
+                auto after = dstLine.takeW(static_cast<size_t>(x + srcLineWidth), static_cast<size_t>(width - x) - srcLineWidth);
+                dstLine = before + srcData[i] + after;
             }
-            auto before = data[static_cast<size_t>(i + y)].takeW(0, x);
-            auto after = data[static_cast<size_t>(i + y)].takeW(static_cast<size_t>(x + srcWidth), static_cast<size_t>(width - x - srcWidth));
-            data[static_cast<size_t>(i + y)] = before + content + after;
         }
-        else {
-            String content = "";
-            if (srcData[i].getWidth() + x > width) {
-                content = srcData[i].takeW(-x, width);
+    }
+    else {
+        for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
+            auto srcLineWidth = srcData[i].getWidth();
+            auto& dstLine = data[static_cast<size_t>(i + y)];
+            if (srcLineWidth + x > width) {
+                dstLine = srcData[i].takeW(-x, width);
             }
             else {
-                content = srcData[i].takeW(-x, srcData[i].getWidth());
+                auto after = dstLine.takeW(static_cast<size_t>(x + srcLineWidth), static_cast<size_t>(width - x) - srcLineWidth);
+                dstLine = srcData[i].takeW(-x, srcData[i].getWidth()) + after;
             }
-            auto after = data[static_cast<size_t>(i + y)].takeW(static_cast<size_t>(x + srcWidth), static_cast<size_t>(width - x - srcWidth));
-            data[static_cast<size_t>(i + y)] = content + after;
         }
     }
 }
