@@ -81,7 +81,8 @@ class Signal
 public:
     using Functor = std::function<CallbackResult(T...)>;
 
-    template<std::invocable Func>
+    template<class Func>
+    requires std::invocable<Func, T...>
     void connect(Func callback)
     {
         if constexpr (std::is_invocable_r_v<CallbackResult, Func, T...>) {
@@ -89,7 +90,7 @@ public:
         }
         else {
             callbacks.push_back([callback = std::move(callback)](auto... t) mutable {
-                callback(std::forward(t)...);
+                callback(std::forward<T>(t)...);
                 return CallbackResult::Keep;
                 });
         }
@@ -101,7 +102,7 @@ public:
         callbacks.push_back(details::bind(std::move(self), memFn, tag...));
     }
 
-    void emit(T&&... t)
+    void emit(T... t)
     {
         for (auto it = callbacks.begin(); it != callbacks.end();) {
             auto result = (*it)(t...);

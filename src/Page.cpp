@@ -1,29 +1,34 @@
 #include <CharUI/Page.h>
-#include <CharUI/Config.h>
 #include <CharUI/Utils/Terminal.h>
 #include <cstdio>
 
+cui::Page::Page()
+{
+    onResize.connect([this](int32_t w, int32_t h) { canvas.resize(w, h); });
+}
+
 int32_t cui::Page::getWidth() const
 {
-    return tWidth;
+    return canvas.getWidth();
 }
 
 int32_t cui::Page::getHeight() const
 {
-    return tHeight;
+    return canvas.getHeight();
 }
 
 void cui::Page::update()
 {
     onUpdate.emit();
+}
 
+void cui::Page::display()
+{
     int32_t newWidth = 0, newHeight = 0;
     terminalSize(&newWidth, &newHeight);
-    if (tWidth != newWidth || tHeight != newHeight) {
-        tWidth = newWidth;
-        tHeight = newHeight;
+    if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
+        onResize.emit(newWidth, newHeight);
         terminalClear();
-        canvas.resize(newWidth, newHeight);
     }
 
     canvas.clear();
@@ -31,11 +36,10 @@ void cui::Page::update()
         canvas.set(p.x, p.y, c);
     }
 
-    Bytes buffer = "";
+    printf("\x1B[0;0H");
     for (auto&& line : canvas.getData()) {
-        buffer += line.getData();
+        printf("%s", line.getData());
     }
-    printf("\x1B[0;0H%s", buffer.data());
 }
 
 void cui::Page::set(int32_t x, int32_t y, int32_t z, std::shared_ptr<Component> src)

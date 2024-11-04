@@ -1,43 +1,29 @@
 cmake_minimum_required(VERSION 3.12)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
+
 project(CharUI
     LANGUAGES CXX C
-    VERSION 1.0.0
+    VERSION 0.0.1
 )
 
-set(CMAKE_CXX_STANDARD 20)
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS 
+    include/CharUI/*.h
+    src/*.cpp
+)
+
+file(GLOB_RECURSE thirdparty CONFIGURE_DEPENDS
+    thirdparty/*.h
+    thirdparty/*.hpp
+    thirdparty/*.c
+    thirdparty/*.cpp
+)
 
 add_library(CharUI
-    include/CharUI/Component/Canvas.h
-    include/CharUI/Component/Component.h
-    include/CharUI/Component/Components.h
-    include/CharUI/Component/Grid.h
-    include/CharUI/Component/HBox.h
-    include/CharUI/Component/Image.h
-    include/CharUI/Component/ProgressBar.h
-    include/CharUI/Component/Text.h
-    include/CharUI/Component/VBox.h
-    include/CharUI/Utils/Chars.h
-    include/CharUI/Utils/Pos.h
-    include/CharUI/Utils/Signal.h
-    include/CharUI/Utils/String.h
-    include/CharUI/Utils/Terminal.h
-    include/CharUI/Config.h
-    include/CharUI/Page.h
-    include/CharUI/CharUI.h
-    thirdparty/wtswidth/wtswidth.c
-    src/Canvas.cpp
-    src/Chars.cpp
-    src/Config.cpp
-    src/Grid.cpp
-    src/HBox.cpp
-    src/Image.cpp
-    src/Page.cpp
-    src/ProgressBar.cpp
-    src/String.cpp
-    src/Terminal.cpp
-    src/Text.cpp
-    src/VBox.cpp
+    ${sources}
+    ${thirdparty}
 )
 
 target_include_directories(CharUI PUBLIC

@@ -9,6 +9,18 @@
 using namespace std::literals;
 
 stbtt_fontinfo font;
+static void initFont()
+{
+    std::ifstream file("../../asserts/simhei.ttf", std::ios::binary);
+    assert(file);
+    file.seekg(0, std::ios::end);
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    unsigned char* ttf_buffer = new unsigned char[size];
+    file.read((char*)ttf_buffer, size);
+    stbtt_InitFont(&font, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0));
+}
+
 static std::vector<cui::String> getCharImage(char c) 
 {
     int w = 0, h = 0;
@@ -22,18 +34,6 @@ static std::vector<cui::String> getCharImage(char c)
         image.push_back(cui::String(bytes.data()));
     }
     return image;
-}
-
-static void initFont() 
-{
-    std::ifstream file("../../asserts/simhei.ttf", std::ios::binary);
-    assert(file);
-    file.seekg(0, std::ios::end);
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-    unsigned char* ttf_buffer = new unsigned char[size];
-    file.read((char*)ttf_buffer, size);
-    stbtt_InitFont(&font, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0));
 }
 
 class RainbowText : public cui::Text
@@ -67,22 +67,11 @@ private:
 class FPS : public cui::Text
 {
 public:
-    FPS()
+    FPS(cui::OnUpdate& onUpdate)
         : Text("FPS: 0")
     {
+        onUpdate.connect(this, &FPS::update);
         lastTime = std::chrono::high_resolution_clock::now();
-    }
-
-    void update()
-    {
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        frameCount++;
-        if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastTime).count() >= 1) {
-            get()[0] = cui::String(cui::Bytes("FPS: ") + std::to_string(frameCount));
-            fps = frameCount;
-            frameCount = 0;
-            lastTime = currentTime;
-        }
     }
 
     int getFPS() const
@@ -94,18 +83,30 @@ private:
     std::chrono::high_resolution_clock::time_point lastTime;
     int fps = 0;
     int frameCount = 0;
+    void update()
+    {
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        frameCount++;
+        if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastTime).count() >= 1) {
+            get()[0] = cui::String(cui::Bytes("FPS: ") + std::to_string(frameCount));
+            fps = frameCount;
+            frameCount = 0;
+            lastTime = currentTime;
+        }
+    }
 };
 
 int main() 
 {
     cui::init();
     initFont();
+    cui::Page page;
 
     auto progressBar1 = cui::progressBar(15);
     auto progressBar2 = cui::progressBar(20);
     auto progressBar3 = cui::progressBar(25);
     auto rainbowText = std::make_shared<RainbowText>("CharUI支持彩色字符");
-    auto fps = std::make_shared<FPS>();
+    auto fps = std::make_shared<FPS>(page.onUpdate);
     auto apple = cui::image("../../asserts/textures/apple.png");
 
     auto grid = cui::grid();
@@ -134,11 +135,9 @@ int main()
             rainbowText
         ));
 
-    cui::Page page;
     page.set(0, 0, 0, grid);
     page.set(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), 0, 0, apple);
 
-    page.onUpdate.connect(fps, &FPS::update);
     page.onUpdate.connect(rainbowText, &RainbowText::update);
     page.onUpdate.connect([&]() { if (progressBar1->isDone()) { progressBar1->set(0); } else { progressBar1->set(progressBar1->get() + 10); } });
     page.onUpdate.connect([&]() { if (progressBar2->isDone()) { progressBar2->set(0); } else { progressBar2->set(progressBar2->get() + 10); } });
@@ -155,6 +154,7 @@ int main()
 
     while (true) {
         page.update();
+        page.display();
         std::this_thread::sleep_for(100ms);
     }
     return 0;
