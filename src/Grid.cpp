@@ -52,11 +52,11 @@ std::vector<cui::String> cui::Grid::getData() const
         }
 
         for (int32_t i = 0; i < height; ++i) {
-            lines[static_cast<size_t>(yOffset + i)].getChars().append(data[i].getChars());
-            lines[static_cast<size_t>(yOffset + i)].append(String(lineWidth - data[i].getWidth(), getPaddingChar()));
+            lines[static_cast<size_t>(yOffset + i)].append(data[i]);
+            lines[static_cast<size_t>(yOffset + i)].appendV(String(lineWidth - data[i].getWidth(), getPaddingChar()));
         }
         for (int32_t i = height; i < lineHeight; ++i) {
-            lines[static_cast<size_t>(yOffset + i)].append(String(lineWidth, getPaddingChar()));
+            lines[static_cast<size_t>(yOffset + i)].appendV(String(lineWidth, getPaddingChar()));
         }
     }
     return lines;

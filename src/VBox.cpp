@@ -34,8 +34,8 @@ std::vector<cui::String> cui::VBox::getData() const
         }
 
         for (size_t i = 0; i < height; ++i) {
-            lines[yOffset + i].getChars().append(data[i].getChars());
-            lines[yOffset + i].append(String(lineWidth - data[i].getWidth(), getPaddingChar()));
+            lines[yOffset + i].append(data[i]);
+            lines[yOffset + i].appendV(String(lineWidth - data[i].getWidth(), getPaddingChar()));
         }
         row += 1;
     }

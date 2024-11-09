@@ -47,11 +47,11 @@ void cui::Image::set(BytesView path)
             int i = (y * width + x) * channels;
             int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
             if (a < 128) {
-                line.append("  ");
+                line.appendV("  ");
             }
             else {
-                line.pushBackRGB(r, g, b);
-                line.append("██");
+                line.appendV(RGB(r, g, b));
+                line.appendV("██");
             }
         }
         data.push_back(line);
@@ -84,11 +84,11 @@ void cui::Image::set(BytesView path, int32_t width, int32_t height)
             int i = (y * width + x) * channels;
             int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
             if (a < 128) {
-                line.append("  ");
+                line.appendV("  ");
             }
             else {
-                line.pushBackRGB(r, g, b);
-                line.append("██");
+                line.appendV(RGB(r, g, b));
+                line.appendV("██");
             }
         }
         data.push_back(line);

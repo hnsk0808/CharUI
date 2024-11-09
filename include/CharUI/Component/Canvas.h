@@ -2,7 +2,6 @@
 #include "Component.h"
 #include "../Utils/String.h"
 #include <memory>
-#include <span>
 #include <vector>
 
 namespace cui

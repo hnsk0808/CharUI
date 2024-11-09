@@ -8,18 +8,18 @@
 
 using namespace std::literals;
 
-static std::vector<unsigned char> readFile(const std::string& filepath) {
+static std::vector<uint8_t> readFile(const std::string& filepath) {
     std::ifstream file(filepath, std::ios::binary);
     assert(file);
     file.seekg(0, std::ios::end);
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
-    std::vector<unsigned char> buffer(size);
+    std::vector<uint8_t> buffer(size);
     file.read(reinterpret_cast<char*>(buffer.data()), size);
     return buffer;
 }
 
-std::vector<unsigned char> ttf_buffer;
+std::vector<uint8_t> ttf_buffer;
 stbtt_fontinfo font;
 static void initFont(const std::string& fontPath) {
     ttf_buffer = readFile(fontPath);
@@ -29,7 +29,7 @@ static void initFont(const std::string& fontPath) {
 static std::vector<cui::String> getCharImage(char c) 
 {
     int w = 0, h = 0;
-    unsigned char* bitmap = stbtt_GetCodepointBitmap(&font, 0, stbtt_ScaleForPixelHeight(&font, 20.0f), c, &w, &h, 0, 0);
+    uint8_t* bitmap = stbtt_GetCodepointBitmap(&font, 0, stbtt_ScaleForPixelHeight(&font, 20.0f), c, &w, &h, 0, 0);
     std::vector<cui::String> image;
     for (int j = 0; j < h; ++j) {
         cui::Bytes bytes = "";

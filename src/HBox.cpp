@@ -28,11 +28,11 @@ std::vector<cui::String> cui::HBox::getData() const
         auto data = c->getData();
 
         for (int32_t i = 0; i < height; ++i) {
-            lines[static_cast<size_t>(i)].getChars().append(data[i].getChars());
-            lines[static_cast<size_t>(i)].append(String(width - data[i].getWidth(), getPaddingChar()));
+            lines[static_cast<size_t>(i)].append(data[i]);
+            lines[static_cast<size_t>(i)].appendV(String(width - data[i].getWidth(), getPaddingChar()));
         }
         for (int32_t i = height; i < getHeight(); ++i) {
-            lines[static_cast<size_t>(i)].append(String(width, getPaddingChar()));
+            lines[static_cast<size_t>(i)].appendV(String(width, getPaddingChar()));
         }
     }
     return lines;
