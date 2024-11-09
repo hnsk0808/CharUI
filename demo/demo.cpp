@@ -114,34 +114,39 @@ int main()
     auto fps = std::make_shared<FPS>(page.onUpdate);
     auto apple = cui::image("../../asserts/textures/apple.png");
 
-    auto grid = cui::grid();
-    grid->set(0, 0,
-        cui::vBox(
-            cui::hBox(
-                cui::image("../../asserts/textures/diamond_sword.png"),
-                cui::text("   "),
-                cui::text(getCharImage('C')),
-                cui::text("   "),
-                cui::text(getCharImage('U')),
-                cui::text("   "),
-                cui::text(getCharImage('I')),
-                cui::text("   ")
-            ),
-            cui::vBox(
-                progressBar1,
-                progressBar2,
-                progressBar3
-            ),
+    {
+        std::vector<std::shared_ptr<cui::Component>> hBox = {
+            cui::image("../../asserts/textures/diamond_sword.png"),
+            cui::text("   "),
+            cui::text(getCharImage('C')),
+            cui::text("   "),
+            cui::text(getCharImage('U')),
+            cui::text("   "),
+            cui::text(getCharImage('I')),
+            cui::text("   "),
+            cui::text("CharUI是跨平台的控制台UI库\nCharUI支持UTF8字符😊")
+        };
+        int32_t w = 0;
+        for (auto&& c : hBox) {
+            page.set(w, 0, 0, c);
+            w += c->getWidth();
+        }
+        page.set(w - hBox.back()->getWidth(), 2, 0, rainbowText);
+    }
+    {
+        std::vector<std::shared_ptr<cui::Component>> vBox = {
+            progressBar1,
+            progressBar2,
+            progressBar3,
             fps
-        ));
-    grid->set(1, 0,
-        cui::vBox(
-            cui::text("CharUI是跨平台的控制台UI库\nCharUI支持UTF8字符😊"),
-            rainbowText
-        ));
-
-    page.set(0, 0, 0, grid);
-    page.set(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), 0, 0, apple);
+        };
+        int32_t h = 16;
+        for (auto&& c : vBox) {
+            page.set(0, h, 0, c);
+            h += c->getHeight();
+        }
+    }
+    page.set(70, 0, 1, apple);
 
     page.onUpdate.connect(rainbowText, &RainbowText::update);
     page.onUpdate.connect([&]() { if (progressBar1->isDone()) { progressBar1->set(0); } else { progressBar1->set(progressBar1->get() + 10); } });
@@ -149,10 +154,10 @@ int main()
     page.onUpdate.connect([&]() { if (progressBar3->isDone()) { progressBar3->set(0); } else { progressBar3->set(progressBar3->get() + 10); } });
     page.onUpdate.connect([&]() {
         static int32_t offset = 0;
-        page.erase(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), offset, 0);
-        page.set(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), ++offset, 0, apple);
+        page.erase(70, offset, 1);
+        page.set(70, ++offset, 1, apple);
         if (offset == 30) {
-            page.erase(grid->get(0, 0)->getWidth() + grid->get(1, 0)->getWidth(), offset, 0);
+            page.erase(70, offset, 1);
             offset = -30;
         }
         });

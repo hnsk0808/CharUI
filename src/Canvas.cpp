@@ -47,7 +47,7 @@ void cui::Canvas::set(int32_t x, int32_t y, const Component& src)
 
     if (x >= 0) {
         for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
-            data[static_cast<size_t>(i + y)] = data[static_cast<size_t>(i + y)].replaceW(x, srcData[i]);
+            data[static_cast<size_t>(i + y)].replaceW(x, srcData[i]);
         }
     }
     else {
@@ -56,7 +56,7 @@ void cui::Canvas::set(int32_t x, int32_t y, const Component& src)
             if (x + srcLineWidth < 0) {
                 continue;
             }
-            data[static_cast<size_t>(i + y)] = data[static_cast<size_t>(i + y)].replaceW(0, srcData[i].takeW(-x, srcLineWidth + x));
+            data[static_cast<size_t>(i + y)].replaceW(0, srcData[i].takeW(-x, srcLineWidth + x));
         }
     }
 }

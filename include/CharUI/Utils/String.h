@@ -63,8 +63,8 @@ public:
     void insertV(size_t index, const String& other);
     // void eraseV(size_t first, size_t last);
     
+    void replaceW(size_t index, const String& other);
     String takeW(size_t index, size_t w) const;
-    String replaceW(size_t index, const String& other) const;
 
     void setDefaultRGB(size_t index);
     void setRGB(size_t index, int r, int g, int b);

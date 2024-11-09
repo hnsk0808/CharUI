@@ -173,6 +173,21 @@ void cui::String::insertV(size_t index, const String& other)
     insert(it, other.bytes.substr(0, other.pushBackPos()).data());
 }
 
+void cui::String::replaceW(size_t index, const String& other)
+{
+    auto [first, indexWidth] = wPos1(index);
+    if (first == end()) {
+        return;
+    }
+    auto remainingWidth = wBeforeEnd(first);
+    auto [otherIt, otherWidth] = other.wPos1(remainingWidth);
+    auto str = String(begin(), first);
+    str.appendV(String(index - indexWidth, ' '));
+    str.append(String(other.begin(), otherIt));
+    str.appendV(takeW(index + otherWidth, remainingWidth - otherWidth));
+    *this = std::move(str);
+}
+
 cui::String cui::String::takeW(size_t index, size_t w) const
 {
     if (w == 0) {
@@ -184,17 +199,6 @@ cui::String cui::String::takeW(size_t index, size_t w) const
     }
     auto [last, currentWidth] = wPos1(first, w);
     return Bytes(indexWidth - index, ' ') + Bytes(first.ptr, last.ptr) + Bytes(w - currentWidth, getPaddingChar());
-}
-
-cui::String cui::String::replaceW(size_t index, const String& other) const
-{
-    auto [first, indexWidth] = wPos1(index);
-    if (first == end()) {
-        return {};
-    }
-    auto remainingWidth = wBeforeEnd(first);
-    auto [otherIt, otherWidth] = other.wPos1(remainingWidth);
-    return Bytes(begin().ptr, first.ptr) + Bytes(index - indexWidth, ' ') + Bytes(other.begin().ptr, otherIt.ptr) + takeW(index + otherWidth, remainingWidth - otherWidth);
 }
 
 void cui::String::setDefaultRGB(size_t index)
