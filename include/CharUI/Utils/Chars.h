@@ -34,25 +34,27 @@ public:
 
     Chars& operator=(const Chars& other);
 
-    // Iterator
-    struct iterator {
-        iterator& operator++();
-        bool operator==(const iterator& other) const;
-        char* operator*();
-        operator char* ();
-        char* p; // => cgui::string::bytes
-    };
+public:
     struct ConstIterator {
-        ConstIterator& operator++();
-        bool operator==(const ConstIterator& other) const;
         const char* operator*() const;
-        operator const char* () const;
-        const char* p; // => cgui::string::bytes
+        ConstIterator& operator++();
+        size_t operator-(const ConstIterator& other) const;
+        bool operator==(const ConstIterator& other) const;
+
+        const char* ptr; // => cgui::string::bytes
     };
-    iterator begin();
-    iterator end();
+    struct Iteratror : public ConstIterator {
+        char* operator*() const;
+        Iteratror& operator++();
+        size_t operator-(const Iteratror& other) const;
+        bool operator==(const Iteratror& other) const;
+    };
+
+public:
     ConstIterator begin() const;
     ConstIterator end() const;
+    Iteratror begin();
+    Iteratror end();
 
 private:
     Bytes bytes;

@@ -1,5 +1,6 @@
 #include <CharUI/Utils/Chars.h>
 #include <wtswidth/wtswidth.h>
+#include <format>
 
 static size_t utf8CharSize(char firstByte)
 {
@@ -44,7 +45,7 @@ size_t cui::charWidth(const char* src)
 
 cui::Bytes cui::RGBToANSIEscapeCode(int mod, int r, int g, int b)
 {
-    return "\x1b[" + std::to_string(mod) + ";2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m";
+    return std::format("\x1b[{};2;{};{};{}m", mod, r, g, b);
 }
 
 cui::Chars::Chars()
@@ -115,7 +116,7 @@ void cui::Chars::insert(size_t index, const Chars& other)
     for (size_t i = 0; i < index; ++i) {
         ++it;
     }
-    bytes.insert(it.p - begin(), other.bytes);
+    bytes.insert(it - begin(), other.bytes);
 }
 
 void cui::Chars::erase(size_t index, size_t n)
@@ -150,22 +151,22 @@ cui::Chars& cui::Chars::operator=(const Chars& other)
     return *this;
 }
 
-cui::Chars::iterator cui::Chars::begin()
-{
-    return { bytes.data() };
-}
-
-cui::Chars::iterator cui::Chars::end()
-{
-    return { bytes.data() + bytes.size() };
-}
-
 cui::Chars::ConstIterator cui::Chars::begin() const
 {
     return { bytes.data() };
 }
 
 cui::Chars::ConstIterator cui::Chars::end() const
+{
+    return { bytes.data() + bytes.size() };
+}
+
+cui::Chars::Iteratror cui::Chars::begin()
+{
+    return { bytes.data() };
+}
+
+cui::Chars::Iteratror cui::Chars::end()
 {
     return { bytes.data() + bytes.size() };
 }
@@ -179,44 +180,44 @@ void cui::Chars::removeBadChar()
     }
 }
 
-cui::Chars::iterator& cui::Chars::iterator::operator++()
+const char* cui::Chars::ConstIterator::operator*() const
 {
-    p += charSize(p);
-    return *this;
-}
-
-bool cui::Chars::iterator::operator==(const iterator& other) const
-{
-    return p == other.p;
-}
-
-char* cui::Chars::iterator::operator*()
-{
-    return p;
-}
-
-cui::Chars::iterator::operator char* ()
-{
-    return p;
+    return ptr;
 }
 
 cui::Chars::ConstIterator& cui::Chars::ConstIterator::operator++()
 {
-    p += charSize(p);
+    ptr += charSize(ptr);
     return *this;
+}
+
+size_t cui::Chars::ConstIterator::operator-(const ConstIterator& other) const
+{
+    return ptr - other.ptr;
 }
 
 bool cui::Chars::ConstIterator::operator==(const ConstIterator& other) const
 {
-    return p == other.p;
+    return ptr == other.ptr;
 }
 
-const char* cui::Chars::ConstIterator::operator*() const
+char* cui::Chars::Iteratror::operator*() const
 {
-    return p;
+    return const_cast<char*>(ptr);
 }
 
-cui::Chars::ConstIterator::operator const char* () const
+cui::Chars::Iteratror& cui::Chars::Iteratror::operator++()
 {
-    return p;
+    ptr += charSize(ptr);
+    return *this;
+}
+
+size_t cui::Chars::Iteratror::operator-(const Iteratror& other) const
+{
+    return ptr - other.ptr;
+}
+
+bool cui::Chars::Iteratror::operator==(const Iteratror& other) const
+{
+    return ptr == other.ptr;
 }

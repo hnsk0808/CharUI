@@ -8,17 +8,22 @@
 
 using namespace std::literals;
 
-stbtt_fontinfo font;
-static void initFont()
-{
-    std::ifstream file("../../asserts/simhei.ttf", std::ios::binary);
+static std::vector<unsigned char> readFile(const std::string& filepath) {
+    std::ifstream file(filepath, std::ios::binary);
     assert(file);
     file.seekg(0, std::ios::end);
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
-    unsigned char* ttf_buffer = new unsigned char[size];
-    file.read((char*)ttf_buffer, size);
-    stbtt_InitFont(&font, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0));
+    std::vector<unsigned char> buffer(size);
+    file.read(reinterpret_cast<char*>(buffer.data()), size);
+    return buffer;
+}
+
+std::vector<unsigned char> ttf_buffer;
+stbtt_fontinfo font;
+static void initFont(const std::string& fontPath) {
+    ttf_buffer = readFile(fontPath);
+    stbtt_InitFont(&font, ttf_buffer.data(), stbtt_GetFontOffsetForIndex(ttf_buffer.data(), 0));
 }
 
 static std::vector<cui::String> getCharImage(char c) 
@@ -99,7 +104,7 @@ private:
 int main() 
 {
     cui::init();
-    initFont();
+    initFont("../../asserts/simhei.ttf");
     cui::Page page;
 
     auto progressBar1 = cui::progressBar(15);
@@ -155,7 +160,7 @@ int main()
     while (true) {
         page.update();
         page.display();
-        std::this_thread::sleep_for(100ms);
+        //std::this_thread::sleep_for(100ms);
     }
     return 0;
 }

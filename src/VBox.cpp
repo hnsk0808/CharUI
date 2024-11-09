@@ -23,9 +23,9 @@ std::vector<cui::String> cui::VBox::getData() const
 {
     std::vector<String> lines(getHeight());
     size_t row = 0;
+    auto lineWidth = getWidth();
     for (auto&& c : components) {
         size_t height = c->getHeight();
-        size_t width = c->getWidth();
         auto data = c->getData();
 
         size_t yOffset = 0;
@@ -35,7 +35,7 @@ std::vector<cui::String> cui::VBox::getData() const
 
         for (size_t i = 0; i < height; ++i) {
             lines[yOffset + i].getChars().append(data[i].getChars());
-            lines[yOffset + i].append(String(getWidth() - data[i].getWidth(), getPaddingChar()));
+            lines[yOffset + i].append(String(lineWidth - data[i].getWidth(), getPaddingChar()));
         }
         row += 1;
     }

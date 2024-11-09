@@ -16,11 +16,6 @@ public:
     String(BytesView bytesView);
     String(size_t count, char c);
 
-    template<std::input_iterator Iter>
-    String(Iter first, Iter last)
-        : chars((Bytes(first, last) + Bytes(defaultColor)).data())
-    {}
-
     size_t getSize() const;
     size_t getWidth() const;
     size_t getCount() const;

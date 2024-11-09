@@ -2,7 +2,7 @@
 
 #ifdef _WIN32
 #define NOMINMAX
-#include <cstdio>
+#include <cstdlib>
 #include <windows.h>
 
 void cui::terminalSize(int32_t* width, int32_t* height)
@@ -19,7 +19,7 @@ void cui::terminalClear() {
 }
 
 #else
-#include <cstdio>
+#include <cstdlib>
 #include <sys/ioctl.h>
 #include <unistd.h>
 

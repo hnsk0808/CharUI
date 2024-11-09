@@ -78,14 +78,14 @@ void cui::String::insert(size_t index, const String& other)
     }
     auto it = chars.begin();
     for (size_t i = 0; i < index; ++it) {
-        if (charWidth(it) != 0) {
+        if (charWidth(it.ptr) != 0) {
             ++i;
         }
     }
-    while (charWidth(it) == 0) {
+    while (charWidth(it.ptr) == 0) {
         ++it;
     }
-    chars.insertByte(it.p - chars.begin(), other.chars.getBytes().substr(0, other.pushBackPos()).data());
+    chars.insertByte(it - chars.begin(), other.chars.getBytes().substr(0, other.pushBackPos()).data());
 }
 
 cui::String cui::String::takeW(size_t index, size_t w) const
@@ -96,20 +96,20 @@ cui::String cui::String::takeW(size_t index, size_t w) const
     auto it = chars.begin();
     Bytes ret;
     size_t cW = 0;
-    for (; cW < index; cW += charWidth(it), ++it);
+    for (; cW < index; cW += charWidth(it.ptr), ++it);
     if (cW > index) {
         ret = Bytes(cW - index, ' ');
     }
     auto first = it, last = it;
-    for (cW = 0; (it != chars.end()) && (cW < w); last = it, cW += charWidth(it), ++it);
+    for (cW = 0; (it != chars.end()) && (cW < w); last = it, cW += charWidth(it.ptr), ++it);
     if (cW == w) {
-        ret += Bytes(first.p, it.p);
+        ret += Bytes(first.ptr, it.ptr);
     }
     else if (cW > w) {
-        ret += Bytes(first.p, last.p) + Bytes(cW - w, getPaddingChar());
+        ret += Bytes(first.ptr, last.ptr) + Bytes(cW - w, getPaddingChar());
     }
     else if (cW < w) {
-        ret += Bytes(first.p, it.p) + Bytes(w - cW, getPaddingChar());
+        ret += Bytes(first.ptr, it.ptr) + Bytes(w - cW, getPaddingChar());
     }
     return ret;
 }
@@ -212,16 +212,16 @@ void cui::String::__setRGB(size_t index, const String& other)
     auto it = chars.begin();
     size_t eraseIndex = 0;
     for (size_t i = 0; i < index; ++it, ++eraseIndex) {
-        if (charWidth(it) != 0) {
+        if (charWidth(it.ptr) != 0) {
             ++i;
         }
     }
     size_t eraseCount = 0;
-    while (charWidth(it) == 0) {
+    while (charWidth(it.ptr) == 0) {
         ++eraseCount;
         ++it;
     }
-    chars.insertByte(it.p - chars.begin(), other.chars.getBytes().substr(0, other.pushBackPos()).data());
+    chars.insertByte(it - chars.begin(), other.chars.getBytes().substr(0, other.pushBackPos()).data());
     chars.erase(eraseIndex, eraseCount);
 }
 

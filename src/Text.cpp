@@ -40,9 +40,8 @@ std::vector<cui::String> cui::Text::getData() const
 void cui::Text::set(BytesView bytesView)
 {
     lines.clear();
-    auto split_view = bytesView | std::views::split('\n');
-    for (auto&& part : split_view) {
-        lines.emplace_back(part.begin(), part.end());
+    for (auto&& part : bytesView | std::views::split('\n') | std::ranges::to<std::vector<std::string>>()) {
+        lines.emplace_back(part.data());
     }
 }
 
@@ -61,14 +60,17 @@ const std::vector<cui::String>& cui::Text::get() const
     return lines;
 }
 
-void cui::Text::pushBack(const String& newLine) {
+void cui::Text::pushBack(const String& newLine) 
+{
     lines.push_back(newLine);
 }
 
-cui::String& cui::Text::operator[](size_t index) {
+cui::String& cui::Text::operator[](size_t index) 
+{
     return lines.at(index);
 }
 
-const cui::String& cui::Text::operator[](size_t index) const {
+const cui::String& cui::Text::operator[](size_t index) const 
+{
     return lines.at(index);
 }

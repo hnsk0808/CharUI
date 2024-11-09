@@ -22,8 +22,7 @@ std::vector<cui::String> cui::Canvas::getData() const
 
 void cui::Canvas::clear()
 {
-    data.clear();
-    data.resize(height, String(width, getPaddingChar()));
+    data.assign(height, String(width, getPaddingChar()));
 }
 
 void cui::Canvas::resize(int32_t w, int32_t h)
