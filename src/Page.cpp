@@ -35,9 +35,13 @@ void cui::Page::display()
     for (auto&& [p, c] : components) {
         canvas.set(p.x, p.y, c->getData(), c->getColorBuffer());
     }
-
+    auto data = canvas.getData();
+    auto colorBuffer = canvas.getColorBuffer();
+    
     printf("\x1B[0;0H");
-    printf("%s", canvas.getBytes().data());
+    for (size_t i = 0; i < canvas.getHeight(); ++i) {
+        printf("%s", (data[i] | colorBuffer[i]).data());
+    }
 }
 
 void cui::Page::set(int32_t x, int32_t y, int32_t z, std::shared_ptr<Component> src)

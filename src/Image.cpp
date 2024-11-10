@@ -46,12 +46,12 @@ void cui::Image::set(const uint8_t* pixels, int32_t width, int32_t height, int32
             int i = (y * width + x) * channels;
             int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
             if (a < 128) {
-                lineColor.emplace_back(0xff, 0xff);
-                lineColor.emplace_back(0xff, 0xff);
+                lineColor.emplace_back();
+                lineColor.emplace_back();
             }
             else {
-                lineColor.emplace_back(r, g, b, r, g, b);
-                lineColor.emplace_back(r, g, b, r, g, b);
+                lineColor.emplace_back(0xff - r, 0xff - g, 0xff - b, 0xff, r, g, b, 0xff);
+                lineColor.emplace_back(0xff - r, 0xff - g, 0xff - b, 0xff, r, g, b, 0xff);
             }
         }
         colorBuffer.push_back(std::move(lineColor));

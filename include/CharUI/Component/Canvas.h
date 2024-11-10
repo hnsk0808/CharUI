@@ -22,8 +22,6 @@ public:
     void resize(int32_t w, int32_t h);
     void set(int32_t x, int32_t y, const std::vector<String>& src, const std::vector<std::vector<Color>>& colorBuf);
 
-    Bytes getBytes() const;
-
 private:
     int32_t width;
     int32_t height;

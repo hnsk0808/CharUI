@@ -78,7 +78,7 @@ int main()
 {
     cui::init();
     cui::setPaddingChar('.');
-    cui::setDefaultColor(cui::Color(0, 0, 0, 255, 255, 255));
+    cui::setDefaultColor(cui::Color(0, 0, 0, 0, 255, 255, 255, 0));
     initFont("../../asserts/simhei.ttf");
     cui::Page page;
 
@@ -124,7 +124,7 @@ int main()
     while (true) {
         page.update();
         page.display();
-        //std::this_thread::sleep_for(100ms);
+        std::this_thread::sleep_for(100ms);
     }
     return 0;
 }
