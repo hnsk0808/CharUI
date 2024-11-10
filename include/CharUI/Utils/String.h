@@ -8,6 +8,7 @@ using BytesView = std::string_view;
 
 size_t charSize(const char* src);
 size_t charWidth(const char* src);
+Bytes takeFirstChar(const char* src);
 
 class String {
 public:

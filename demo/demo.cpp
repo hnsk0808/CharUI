@@ -53,7 +53,8 @@ public:
 
     int32_t getWidth() const override { return text.getWidth(); }
     int32_t getHeight() const override { return text.getHeight(); }
-    std::vector<cui::String> getData() const { return text.getData(); }
+    std::vector<cui::String> getData() const override { return text.getData(); }
+    virtual std::vector<std::vector<cui::Color>> getColorBuffer() const { return {}; }
 
 private:
     cui::Text text;
@@ -76,38 +77,30 @@ private:
 int main() 
 {
     cui::init();
+    cui::setPaddingChar('.');
+    cui::setDefaultColor(cui::Color(0, 0, 0, 255, 255, 255));
     initFont("../../asserts/simhei.ttf");
     cui::Page page;
 
-    auto progressBar1 = cui::progressBar(15);
-    auto progressBar2 = cui::progressBar(20);
-    auto progressBar3 = cui::progressBar(25);
     auto fps = std::make_shared<FPS>(page.onUpdate);
     auto apple = cui::image("../../asserts/textures/apple.png");
 
     {
         std::vector<std::shared_ptr<cui::Component>> hBox = {
             cui::image("../../asserts/textures/diamond_sword.png"),
-            cui::text("   "),
             cui::text(getCharImage('C')),
-            cui::text("   "),
             cui::text(getCharImage('U')),
-            cui::text("   "),
             cui::text(getCharImage('I')),
-            cui::text("   "),
-            cui::text("CharUI是跨平台的控制台UI库\nCharUI支持UTF8字符😊")
+            cui::text("CharUI是跨平台的控制台UI库😊\nCharUI支持UTF8字符😊")
         };
         int32_t w = 0;
         for (auto&& c : hBox) {
             page.set(w, 0, 0, c);
-            w += c->getWidth();
+            w += c->getWidth() + 3;
         }
     }
     {
         std::vector<std::shared_ptr<cui::Component>> vBox = {
-            progressBar1,
-            progressBar2,
-            progressBar3,
             fps
         };
         int32_t h = 16;
@@ -119,9 +112,6 @@ int main()
     int32_t offset = 0;
     page.set(70, offset, 1, apple);
 
-    page.onUpdate.connect([&]() { if (progressBar1->isDone()) { progressBar1->set(0); } else { progressBar1->set(progressBar1->get() + 10); } });
-    page.onUpdate.connect([&]() { if (progressBar2->isDone()) { progressBar2->set(0); } else { progressBar2->set(progressBar2->get() + 10); } });
-    page.onUpdate.connect([&]() { if (progressBar3->isDone()) { progressBar3->set(0); } else { progressBar3->set(progressBar3->get() + 10); } });
     page.onUpdate.connect([&]() {
         page.erase(70, offset, 1);
         page.set(70, ++offset, 1, apple);

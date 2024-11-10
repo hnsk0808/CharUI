@@ -16,51 +16,61 @@ cui::Image::Image(BytesView path, int32_t width, int32_t height)
 
 int32_t cui::Image::getWidth() const
 {
-    int32_t maxWidth = 0;
-    for (auto& line : data) {
-        maxWidth = std::max(static_cast<int32_t>(line.getWidth()), maxWidth);
-    }
-    return maxWidth;
+    return width * 2;
 }
 
 int32_t cui::Image::getHeight() const
 {
-    return static_cast<int32_t>(data.size());
+    return height;
 }
 
 std::vector<cui::String> cui::Image::getData() const
 {
-    return data;
+    return {};
+}
+
+std::vector<std::vector<cui::Color>> cui::Image::getColorBuffer() const
+{
+    return colorBuffer;
+}
+
+void cui::Image::set(const uint8_t* pixels, int32_t width, int32_t height, int32_t channels)
+{
+    this->width = width;
+    this->height = height;
+    colorBuffer.clear();
+    for (int y = 0; y < height; ++y) {
+        String line;
+        std::vector<Color> lineColor;
+        for (int x = 0; x < width; ++x) {
+            int i = (y * width + x) * channels;
+            int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
+            if (a < 128) {
+                lineColor.emplace_back(0xff, 0xff);
+                lineColor.emplace_back(0xff, 0xff);
+            }
+            else {
+                lineColor.emplace_back(r, g, b, r, g, b);
+                lineColor.emplace_back(r, g, b, r, g, b);
+            }
+        }
+        colorBuffer.push_back(std::move(lineColor));
+    }
 }
 
 void cui::Image::set(BytesView path)
 {
-    data.clear();
     int width = 0, height = 0, channels = 0;
     auto pixels = stbi_load(path.data(), &width, &height, &channels, STBI_rgb_alpha);
     if (!pixels) {
         return;
     }
-    for (int y = 0; y < height; ++y) {
-        cui::String line = "";
-        for (int x = 0; x < width; ++x) {
-            int i = (y * width + x) * channels;
-            int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
-            if (a < 128) {
-                line.append("  ");
-            }
-            else {
-                line.append("██");
-            }
-        }
-        data.push_back(line);
-    }
+    set(pixels, width, height, channels);
     stbi_image_free(pixels);
 }
 
 void cui::Image::set(BytesView path, int32_t width, int32_t height)
 {
-    data.clear();
     stbi_uc* pixels = nullptr;
     int channels = 0;
     {
@@ -76,20 +86,6 @@ void cui::Image::set(BytesView path, int32_t width, int32_t height)
     if (!pixels) {
         return;
     }
-
-    for (int y = 0; y < height; ++y) {
-        cui::String line = "";
-        for (int x = 0; x < width; ++x) {
-            int i = (y * width + x) * channels;
-            int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
-            if (a < 128) {
-                line.append("  ");
-            }
-            else {
-                line.append("██");
-            }
-        }
-        data.push_back(line);
-    }
+    set(pixels, width, height, channels);
     stbi_image_free(pixels);
 }

@@ -33,13 +33,11 @@ void cui::Page::display()
 
     canvas.clear();
     for (auto&& [p, c] : components) {
-        canvas.set(p.x, p.y, c->getData());
+        canvas.set(p.x, p.y, c->getData(), c->getColorBuffer());
     }
 
     printf("\x1B[0;0H");
-    for (auto&& line : canvas.getData()) {
-        printf("%s", line.getData());
-    }
+    printf("%s", canvas.getBytes().data());
 }
 
 void cui::Page::set(int32_t x, int32_t y, int32_t z, std::shared_ptr<Component> src)

@@ -2,7 +2,6 @@
 #include <memory>
 #include "Canvas.h"
 #include "Image.h"
-#include "ProgressBar.h" 
 #include "Text.h"
 
 namespace cui
@@ -13,9 +12,6 @@ auto canvas(T&&...t) { return std::make_shared<Canvas>(std::forward<T>(t)...); }
 
 template<class...T>
 auto image(T&&...t) { return std::make_shared<Image>(std::forward<T>(t)...); }
-
-template<class...T>
-auto progressBar(T&&...t) { return std::make_shared<ProgressBar>(std::forward<T>(t)...); }
 
 template<class...T>
 auto text(T&&...t) { return std::make_shared<Text>(std::forward<T>(t)...); }

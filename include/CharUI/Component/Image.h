@@ -14,12 +14,16 @@ public:
     int32_t getWidth() const override;
     int32_t getHeight() const override;
     std::vector<String> getData() const override;
+    std::vector<std::vector<Color>> getColorBuffer() const override;
 
+    void set(const uint8_t* pixels, int32_t width, int32_t height, int32_t channels);
     void set(BytesView path);
     void set(BytesView path, int32_t width, int32_t height);
 
 private:
-    std::vector<String> data;
+    int32_t width;
+    int32_t height;
+    std::vector<std::vector<Color>> colorBuffer;
 };
 
 }

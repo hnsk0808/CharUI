@@ -37,6 +37,11 @@ std::vector<cui::String> cui::Text::getData() const
     return lines;
 }
 
+std::vector<std::vector<cui::Color>> cui::Text::getColorBuffer() const
+{
+    return {};
+}
+
 void cui::Text::set(BytesView bytesView)
 {
     lines.clear();
