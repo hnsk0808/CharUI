@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "../Utils/String.h"
 #include <memory>
+#include <span>
 #include <vector>
 
 namespace cui
@@ -18,8 +19,7 @@ public:
     
     void clear();
     void resize(int32_t w, int32_t h);
-    void set(int32_t x, int32_t y, const Component& src);
-    void set(int32_t x, int32_t y, std::shared_ptr<const Component> src);
+    void set(int32_t x, int32_t y, const std::vector<String>& src);
 
 private:
     int32_t width;

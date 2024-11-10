@@ -33,7 +33,7 @@ void cui::Page::display()
 
     canvas.clear();
     for (auto&& [p, c] : components) {
-        canvas.set(p.x, p.y, c);
+        canvas.set(p.x, p.y, c->getData());
     }
 
     printf("\x1B[0;0H");

@@ -32,36 +32,29 @@ void cui::Canvas::resize(int32_t w, int32_t h)
     data.resize(height, String(width, getPaddingChar()));
 }
 
-void cui::Canvas::set(int32_t x, int32_t y, const Component& src)
+void cui::Canvas::set(int32_t x, int32_t y, const std::vector<String>& src)
 {
     if (x >= width || y >= height) {
         return;
     }
 
-    auto srcHeight = src.getHeight();
-    auto srcData = src.getData();
-
+    int32_t srcHeight = static_cast<int32_t>(src.size());
     if (srcHeight + y > height) {
         srcHeight = height - (y >= 0 ? y : 0);
     }
 
     if (x >= 0) {
         for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
-            data[static_cast<size_t>(i + y)].replaceW(x, srcData[i]);
+            data[static_cast<size_t>(i + y)].replaceW(x, src[i]);
         }
     }
     else {
         for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
-            auto srcLineWidth = srcData[i].getWidth();
+            auto srcLineWidth = src[i].getWidth();
             if (x + srcLineWidth < 0) {
                 continue;
             }
-            data[static_cast<size_t>(i + y)].replaceW(0, srcData[i].takeW(-x, srcLineWidth + x));
+            data[static_cast<size_t>(i + y)].replaceW(0, src[i].takeW(-x, srcLineWidth + x));
         }
     }
-}
-
-void cui::Canvas::set(int32_t x, int32_t y, std::shared_ptr<const Component> src)
-{
-    set(x, y, *src);
 }

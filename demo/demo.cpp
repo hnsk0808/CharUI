@@ -8,8 +8,8 @@
 
 using namespace std::literals;
 
-static std::vector<uint8_t> readFile(const std::string& filepath) {
-    std::ifstream file(filepath, std::ios::binary);
+static std::vector<uint8_t> readFile(std::string_view filepath) {
+    std::ifstream file(filepath.data(), std::ios::binary);
     assert(file);
     file.seekg(0, std::ios::end);
     std::streamsize size = file.tellg();
@@ -21,7 +21,7 @@ static std::vector<uint8_t> readFile(const std::string& filepath) {
 
 std::vector<uint8_t> ttf_buffer;
 stbtt_fontinfo font;
-static void initFont(const std::string& fontPath) {
+static void initFont(std::string_view fontPath) {
     ttf_buffer = readFile(fontPath);
     stbtt_InitFont(&font, ttf_buffer.data(), stbtt_GetFontOffsetForIndex(ttf_buffer.data(), 0));
 }
@@ -41,59 +41,31 @@ static std::vector<cui::String> getCharImage(char c)
     return image;
 }
 
-class RainbowText : public cui::Text
-{
-public:
-    static constexpr int rainbowRad[] = { 255, 255, 255, 0, 0, 0, 238 };
-    static constexpr int rainbowGreen[] = { 0, 165, 255, 255, 255, 0, 130 };
-    static constexpr int rainbowBlue[] = { 0, 0, 0, 0, 255, 255, 238 };
-
-public:
-    RainbowText(cui::BytesView bytesView)
-        : Text(bytesView)
-    {
-        get().resize(1);
-        update();
-    }
-
-    void update()
-    {
-        for (int i = 0; i < get()[0].getVCount(); ++i) {
-            int j = (i + rainbowOffset) % 7;
-            get()[0].setRGB(i, rainbowRad[j], rainbowGreen[j], rainbowBlue[j]);
-        }
-        ++rainbowOffset;
-    }
-
-private:
-    size_t rainbowOffset = 0;
-};
-
-class FPS : public cui::Text
+class FPS : public cui::Component
 {
 public:
     FPS(cui::OnUpdate& onUpdate)
-        : Text("FPS: 0")
+        : text("FPS: 0")
     {
         onUpdate.connect(this, &FPS::update);
         lastTime = std::chrono::high_resolution_clock::now();
     }
 
-    int getFPS() const
-    {
-        return fps;
-    }
+    int32_t getWidth() const override { return text.getWidth(); }
+    int32_t getHeight() const override { return text.getHeight(); }
+    std::vector<cui::String> getData() const { return text.getData(); }
 
 private:
+    cui::Text text;
     std::chrono::high_resolution_clock::time_point lastTime;
     int fps = 0;
     int frameCount = 0;
     void update()
     {
         auto currentTime = std::chrono::high_resolution_clock::now();
-        frameCount++;
+        ++frameCount;
         if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastTime).count() >= 1) {
-            get()[0] = cui::String(cui::Bytes("FPS: ") + std::to_string(frameCount));
+            text[0] = cui::String(cui::Bytes("FPS: ") + std::to_string(frameCount));
             fps = frameCount;
             frameCount = 0;
             lastTime = currentTime;
@@ -110,7 +82,6 @@ int main()
     auto progressBar1 = cui::progressBar(15);
     auto progressBar2 = cui::progressBar(20);
     auto progressBar3 = cui::progressBar(25);
-    auto rainbowText = std::make_shared<RainbowText>("CharUI支持彩色字符");
     auto fps = std::make_shared<FPS>(page.onUpdate);
     auto apple = cui::image("../../asserts/textures/apple.png");
 
@@ -131,7 +102,6 @@ int main()
             page.set(w, 0, 0, c);
             w += c->getWidth();
         }
-        page.set(w - hBox.back()->getWidth(), 2, 0, rainbowText);
     }
     {
         std::vector<std::shared_ptr<cui::Component>> vBox = {
@@ -146,14 +116,13 @@ int main()
             h += c->getHeight();
         }
     }
-    page.set(70, 0, 1, apple);
+    int32_t offset = 0;
+    page.set(70, offset, 1, apple);
 
-    page.onUpdate.connect(rainbowText, &RainbowText::update);
     page.onUpdate.connect([&]() { if (progressBar1->isDone()) { progressBar1->set(0); } else { progressBar1->set(progressBar1->get() + 10); } });
     page.onUpdate.connect([&]() { if (progressBar2->isDone()) { progressBar2->set(0); } else { progressBar2->set(progressBar2->get() + 10); } });
     page.onUpdate.connect([&]() { if (progressBar3->isDone()) { progressBar3->set(0); } else { progressBar3->set(progressBar3->get() + 10); } });
     page.onUpdate.connect([&]() {
-        static int32_t offset = 0;
         page.erase(70, offset, 1);
         page.set(70, ++offset, 1, apple);
         if (offset == 30) {
