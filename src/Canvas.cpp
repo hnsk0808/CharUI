@@ -35,7 +35,7 @@ int32_t cui::Canvas::getHeight() const
     return height;
 }
 
-std::vector<cui::String> cui::Canvas::getData() const
+std::vector<cui::String> cui::Canvas::getCharBuffer() const
 {
     return data;
 }

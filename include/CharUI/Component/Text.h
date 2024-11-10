@@ -13,7 +13,7 @@ public:
 
     int32_t getWidth() const override;
     int32_t getHeight() const override;
-    std::vector<String> getData() const override;
+    std::vector<String> getCharBuffer() const override;
     std::vector<std::vector<Color>> getColorBuffer() const override;
 
     void set(BytesView bytesView);

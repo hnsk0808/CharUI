@@ -1,5 +1,4 @@
 #include <CharUI/CharUI.h>
-#include <CharUI/Utils/Terminal.h>
 #include <thread>
 #include <functional>
 #include <fstream>
@@ -53,7 +52,7 @@ public:
 
     int32_t getWidth() const override { return text.getWidth(); }
     int32_t getHeight() const override { return text.getHeight(); }
-    std::vector<cui::String> getData() const override { return text.getData(); }
+    std::vector<cui::String> getCharBuffer() const override { return text.getCharBuffer(); }
     virtual std::vector<std::vector<cui::Color>> getColorBuffer() const { return {}; }
 
 private:
@@ -77,8 +76,8 @@ private:
 int main() 
 {
     cui::init();
-    cui::setPaddingChar('.');
-    cui::setDefaultColor(cui::Color(0, 0, 0, 0, 255, 255, 255, 0));
+    //cui::setPaddingChar('.');
+    //cui::setDefaultColor(cui::Color(0, 0, 0, 0, 255, 255, 255, 0));
     initFont("../../asserts/simhei.ttf");
     cui::Page page;
 
@@ -112,6 +111,15 @@ int main()
     int32_t offset = 0;
     page.set(70, offset, 1, apple);
 
+    page.onResize.connect([&](int32_t w, int32_t h) {
+        auto bkImage = cui::image("../../asserts/textures/bk.jpeg", w / 2, h);
+        for (auto& line : bkImage->get()) {
+            for (auto& color : line) {
+                color.bk -= 0x000000AA;
+            }
+        }
+        page.set(0, 0, 999, bkImage);
+        });
     page.onUpdate.connect([&]() {
         page.erase(70, offset, 1);
         page.set(70, ++offset, 1, apple);

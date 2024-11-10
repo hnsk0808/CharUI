@@ -32,7 +32,7 @@ int32_t cui::Text::getHeight() const
     return static_cast<int32_t>(lines.size());
 }
 
-std::vector<cui::String> cui::Text::getData() const
+std::vector<cui::String> cui::Text::getCharBuffer() const
 {
     return lines;
 }

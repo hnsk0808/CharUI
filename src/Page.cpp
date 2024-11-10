@@ -33,9 +33,9 @@ void cui::Page::display()
 
     canvas.clear();
     for (auto&& [p, c] : components) {
-        canvas.set(p.x, p.y, c->getData(), c->getColorBuffer());
+        canvas.set(p.x, p.y, c->getCharBuffer(), c->getColorBuffer());
     }
-    auto data = canvas.getData();
+    auto data = canvas.getCharBuffer();
     auto colorBuffer = canvas.getColorBuffer();
     
     printf("\x1B[0;0H");
