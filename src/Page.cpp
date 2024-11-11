@@ -35,8 +35,8 @@ void cui::Page::display()
     for (auto&& [p, c] : components) {
         canvas.set(p.x, p.y, c->getCharBuffer(), c->getColorBuffer());
     }
-    auto data = canvas.getCharBuffer();
-    auto colorBuffer = canvas.getColorBuffer();
+    auto& data = canvas.getCharBuffer();
+    auto& colorBuffer = canvas.getColorBuffer();
     
     printf("\x1B[0;0H");
     for (size_t i = 0; i < canvas.getHeight(); ++i) {

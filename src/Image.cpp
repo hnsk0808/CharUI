@@ -5,6 +5,8 @@
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include <stb/stb_image_resize.h>
 
+cui::Image::Image() = default;
+
 cui::Image::Image(BytesView path)
 {
     set(path);
@@ -17,7 +19,7 @@ cui::Image::Image(BytesView path, int32_t width, int32_t height)
 
 int32_t cui::Image::getWidth() const
 {
-    return width * 2;
+    return width;
 }
 
 int32_t cui::Image::getHeight() const
@@ -25,12 +27,12 @@ int32_t cui::Image::getHeight() const
     return height;
 }
 
-std::vector<cui::String> cui::Image::getCharBuffer() const
+const std::vector<cui::String>& cui::Image::getCharBuffer() const
 {
-    return {};
+    return charBuffer;
 }
 
-std::vector<std::vector<cui::Color>> cui::Image::getColorBuffer() const
+const std::vector<std::vector<cui::Color>>& cui::Image::getColorBuffer() const
 {
     return colorBuffer;
 }
@@ -42,7 +44,7 @@ std::vector<std::vector<cui::Color>>& cui::Image::get()
 
 void cui::Image::set(const uint8_t* pixels, int32_t width, int32_t height, int32_t channels)
 {
-    this->width = width;
+    this->width = width * 2;
     this->height = height;
     colorBuffer.clear();
     for (int y = 0; y < height; ++y) {

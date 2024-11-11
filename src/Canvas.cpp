@@ -22,7 +22,7 @@ uint32_t blend(uint32_t color1, uint32_t color2) {
 }
 
 cui::Canvas::Canvas(int32_t width, int32_t height)
-    : width(width), height(height), data(height, String(width, getPaddingChar())), colorBuffer(height, std::vector(width, getDefaultColor()))
+    : width(width), height(height), charBuffer(height, String(width, getPaddingChar())), colorBuffer(height, std::vector(width, getDefaultColor()))
 {}
 
 int32_t cui::Canvas::getWidth() const
@@ -35,19 +35,19 @@ int32_t cui::Canvas::getHeight() const
     return height;
 }
 
-std::vector<cui::String> cui::Canvas::getCharBuffer() const
+const std::vector<cui::String>& cui::Canvas::getCharBuffer() const
 {
-    return data;
+    return charBuffer;
 }
 
-std::vector<std::vector<cui::Color>> cui::Canvas::getColorBuffer() const
+const std::vector<std::vector<cui::Color>>& cui::Canvas::getColorBuffer() const
 {
     return colorBuffer;
 }
 
 void cui::Canvas::clear()
 {
-    data.assign(height, String(width, getPaddingChar()));
+    charBuffer.assign(height, String(width, getPaddingChar()));
     colorBuffer.assign(height, std::vector(width, getDefaultColor()));
 }
 
@@ -55,34 +55,34 @@ void cui::Canvas::resize(int32_t w, int32_t h)
 {
     width = w;
     height = h;
-    data.resize(height, String(width, getPaddingChar()));
-    colorBuffer.assign(height, std::vector(width, getDefaultColor()));
+    charBuffer.resize(height, String(width, getPaddingChar()));
+    colorBuffer.resize(height, std::vector(width, getDefaultColor()));
 }
 
-void cui::Canvas::set(int32_t x, int32_t y, const std::vector<String>& src, const std::vector<std::vector<Color>>& colorBuf)
+void cui::Canvas::set(int32_t x, int32_t y, const std::vector<String>& charBuf, const std::vector<std::vector<Color>>& colorBuf)
 {
     if (x >= width || y >= height) {
         return;
     }
 
     // Char Buffer
-    int32_t srcHeight = static_cast<int32_t>(src.size());
+    int32_t srcHeight = static_cast<int32_t>(charBuf.size());
     if (srcHeight + y > height) {
         srcHeight = height - (y >= 0 ? y : 0);
     }
 
     if (x >= 0) {
         for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
-            data[static_cast<size_t>(i + y)].replaceW(x, src[i]);
+            charBuffer[static_cast<size_t>(i + y)].replaceW(x, charBuf[i]);
         }
     }
     else {
         for (int32_t i = (y < 0 ? -y : 0); i < srcHeight; ++i) {
-            auto srcLineWidth = src[i].getWidth();
+            auto srcLineWidth = charBuf[i].getWidth();
             if (x + srcLineWidth < 0) {
                 continue;
             }
-            data[static_cast<size_t>(i + y)].replaceW(0, src[i].takeW(-x, srcLineWidth + x));
+            charBuffer[static_cast<size_t>(i + y)].replaceW(0, charBuf[i].takeW(-x, srcLineWidth + x));
         }
     }
 

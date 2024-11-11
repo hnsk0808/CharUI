@@ -1,5 +1,6 @@
 #pragma once
 #include "Component/Canvas.h"
+#include "Component/Image.h"
 #include "Utils/Pos.h"
 #include "Signals.h"
 #include <map>

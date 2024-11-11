@@ -13,8 +13,8 @@ public:
 
     int32_t getWidth() const override;
     int32_t getHeight() const override;
-    std::vector<String> getCharBuffer() const override;
-    std::vector<std::vector<Color>> getColorBuffer() const override;
+    const std::vector<String>& getCharBuffer() const override;
+    const std::vector<std::vector<Color>>& getColorBuffer() const override;
 
     void set(BytesView bytesView);
     void set(const std::vector<String>& lines);
@@ -26,7 +26,8 @@ public:
     const String& operator[](size_t index) const;
 
 private:
-    std::vector<String> lines;
+    std::vector<String> charBuffer;
+    std::vector<std::vector<Color>> colorBuffer;
 };
 
 }

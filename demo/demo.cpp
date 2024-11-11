@@ -7,7 +7,8 @@
 
 using namespace std::literals;
 
-static std::vector<uint8_t> readFile(std::string_view filepath) {
+static std::vector<uint8_t> readFile(std::string_view filepath) 
+{
     std::ifstream file(filepath.data(), std::ios::binary);
     assert(file);
     file.seekg(0, std::ios::end);
@@ -20,7 +21,8 @@ static std::vector<uint8_t> readFile(std::string_view filepath) {
 
 std::vector<uint8_t> ttf_buffer;
 stbtt_fontinfo font;
-static void initFont(std::string_view fontPath) {
+static void initFont(std::string_view fontPath)
+{
     ttf_buffer = readFile(fontPath);
     stbtt_InitFont(&font, ttf_buffer.data(), stbtt_GetFontOffsetForIndex(ttf_buffer.data(), 0));
 }
@@ -52,8 +54,8 @@ public:
 
     int32_t getWidth() const override { return text.getWidth(); }
     int32_t getHeight() const override { return text.getHeight(); }
-    std::vector<cui::String> getCharBuffer() const override { return text.getCharBuffer(); }
-    virtual std::vector<std::vector<cui::Color>> getColorBuffer() const { return {}; }
+    const std::vector<cui::String>& getCharBuffer() const override { return text.getCharBuffer(); }
+    const std::vector<std::vector<cui::Color>>& getColorBuffer() const { return text.getColorBuffer(); }
 
 private:
     cui::Text text;
@@ -81,9 +83,8 @@ int main()
     initFont("../../asserts/simhei.ttf");
     cui::Page page;
 
-    auto fps = std::make_shared<FPS>(page.onUpdate);
-    auto apple = cui::image("../../asserts/textures/apple.png");
-
+    auto bkImage = cui::image();
+    page.set(0, 0, 999, bkImage);
     {
         std::vector<std::shared_ptr<cui::Component>> hBox = {
             cui::image("../../asserts/textures/diamond_sword.png"),
@@ -100,7 +101,7 @@ int main()
     }
     {
         std::vector<std::shared_ptr<cui::Component>> vBox = {
-            fps
+            std::make_shared<FPS>(page.onUpdate)
         };
         int32_t h = 16;
         for (auto&& c : vBox) {
@@ -109,16 +110,16 @@ int main()
         }
     }
     int32_t offset = 0;
+    auto apple = cui::image("../../asserts/textures/apple.png");
     page.set(70, offset, 1, apple);
 
     page.onResize.connect([&](int32_t w, int32_t h) {
-        auto bkImage = cui::image("../../asserts/textures/bk.jpeg", w / 2, h);
+        bkImage->set("../../asserts/textures/bk.jpeg", w / 2, h);
         for (auto& line : bkImage->get()) {
             for (auto& color : line) {
                 color.bk -= 0x000000AA;
             }
         }
-        page.set(0, 0, 999, bkImage);
         });
     page.onUpdate.connect([&]() {
         page.erase(70, offset, 1);

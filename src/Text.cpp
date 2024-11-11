@@ -12,16 +12,16 @@ cui::Text::Text(const char* str)
 
 cui::Text::Text(const String& str)
 {
-    lines.push_back(str);
+    charBuffer.push_back(str);
 }
 
 cui::Text::Text(const std::vector<String>& lines)
-    : lines(lines) {}
+    : charBuffer(lines) {}
 
 int32_t cui::Text::getWidth() const
 {
     int32_t maxWidth = 0;
-    for (auto& line : lines) {
+    for (auto& line : charBuffer) {
         maxWidth = std::max(static_cast<int32_t>(line.getWidth()), maxWidth);
     }
     return maxWidth;
@@ -29,53 +29,53 @@ int32_t cui::Text::getWidth() const
 
 int32_t cui::Text::getHeight() const
 {
-    return static_cast<int32_t>(lines.size());
+    return static_cast<int32_t>(charBuffer.size());
 }
 
-std::vector<cui::String> cui::Text::getCharBuffer() const
+const std::vector<cui::String>& cui::Text::getCharBuffer() const
 {
-    return lines;
+    return charBuffer;
 }
 
-std::vector<std::vector<cui::Color>> cui::Text::getColorBuffer() const
+const std::vector<std::vector<cui::Color>>& cui::Text::getColorBuffer() const
 {
-    return {};
+    return colorBuffer;
 }
 
 void cui::Text::set(BytesView bytesView)
 {
-    lines.clear();
+    charBuffer.clear();
     for (auto&& part : bytesView | std::views::split('\n') | std::ranges::to<std::vector<std::string>>()) {
-        lines.emplace_back(part.data());
+        charBuffer.emplace_back(part.data());
     }
 }
 
-void cui::Text::set(const std::vector<String>& lines)
+void cui::Text::set(const std::vector<String>& charBuffer)
 {
-    this->lines = lines;
+    this->charBuffer = charBuffer;
 }
 
 std::vector<cui::String>& cui::Text::get()
 {
-    return lines;
+    return charBuffer;
 }
 
 const std::vector<cui::String>& cui::Text::get() const
 {
-    return lines;
+    return charBuffer;
 }
 
 void cui::Text::pushBack(const String& newLine) 
 {
-    lines.push_back(newLine);
+    charBuffer.push_back(newLine);
 }
 
 cui::String& cui::Text::operator[](size_t index) 
 {
-    return lines.at(index);
+    return charBuffer.at(index);
 }
 
 const cui::String& cui::Text::operator[](size_t index) const 
 {
-    return lines.at(index);
+    return charBuffer.at(index);
 }
