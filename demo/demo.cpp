@@ -133,7 +133,7 @@ int main()
     while (true) {
         page.update();
         page.display();
-        std::this_thread::sleep_for(100ms);
+        //std::this_thread::sleep_for(100ms);
     }
     return 0;
 }

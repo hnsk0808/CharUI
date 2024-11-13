@@ -21,14 +21,21 @@ file(GLOB_RECURSE thirdparty CONFIGURE_DEPENDS
     thirdparty/*.cpp
 )
 
+add_library(ThirdParty
+    ${thirdparty}
+)
+
 add_library(CharUI
     ${sources}
-    ${thirdparty}
 )
 
 target_include_directories(CharUI PUBLIC
     include/
     thirdparty/
+)
+
+target_link_libraries(CharUI PUBLIC 
+    ThirdParty
 )
 
 add_subdirectory(demo)

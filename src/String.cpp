@@ -127,13 +127,13 @@ cui::String& cui::String::operator+=(const String& other) { append(other); retur
 
 cui::String& cui::String::operator=(const String& other) { bytes = other.bytes; return *this; }
 
-cui::String::ConstIterator cui::String::begin() const { return bytes.begin()._Ptr; }
+cui::String::ConstIterator cui::String::begin() const { return bytes.data(); }
 
-cui::String::ConstIterator cui::String::end() const { return bytes.end()._Ptr; }
+cui::String::ConstIterator cui::String::end() const { return bytes.data() + bytes.size(); }
 
-cui::String::Iterator cui::String::begin() { return bytes.begin()._Ptr; }
+cui::String::Iterator cui::String::begin() { return bytes.data(); }
 
-cui::String::Iterator cui::String::end() { return bytes.end()._Ptr; }
+cui::String::Iterator cui::String::end() { return bytes.data() + bytes.size(); }
 
 cui::String::Iterator cui::String::pos(const ConstIterator& offset, size_t n) const
 {

@@ -1,5 +1,6 @@
 #pragma once
 #include "String.h"
+#include <cstdint>
 #include <map>
 #include <vector>
 
