@@ -16,17 +16,19 @@ public:
     int32_t getWidth() const override;
     int32_t getHeight() const override;
     const std::vector<String>& getCharBuffer() const override;
-    const std::vector<std::vector<Color>>& getColorBuffer() const override;
+    const FeColorBuffer& getFeColorBuffer() const override;
+    const BkColorBuffer& getBkColorBuffer() const override;
     
     void clear();
     void resize(int32_t w, int32_t h);
-    void set(int32_t x, int32_t y, const std::vector<String>& charBuf, const std::vector<std::vector<Color>>& colorBuf);
+    void set(int32_t x, int32_t y, const std::vector<String>& charBuf, const FeColorBuffer& feColorBuf, const BkColorBuffer& bkColorBuf);
 
 private:
     int32_t width;
     int32_t height;
     std::vector<String> charBuffer;
-    std::vector<std::vector<Color>> colorBuffer;
+    FeColorBuffer feColorBuffer;
+    BkColorBuffer bkColorBuffer;
 };
 
 }

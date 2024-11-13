@@ -32,21 +32,26 @@ const std::vector<cui::String>& cui::Image::getCharBuffer() const
     return charBuffer;
 }
 
-const std::vector<std::vector<cui::Color>>& cui::Image::getColorBuffer() const
+const cui::FeColorBuffer& cui::Image::getFeColorBuffer() const
 {
-    return colorBuffer;
+    return feColorBuffer;
+}
+
+const cui::BkColorBuffer& cui::Image::getBkColorBuffer() const
+{
+    return bkColorBuffer;
 }
 
 std::vector<std::vector<cui::Color>>& cui::Image::get()
 {
-    return colorBuffer;
+    return bkColorBuffer;
 }
 
 void cui::Image::set(const uint8_t* pixels, int32_t width, int32_t height, int32_t channels)
 {
     this->width = width * 2;
     this->height = height;
-    colorBuffer.clear();
+    bkColorBuffer.clear();
     for (int y = 0; y < height; ++y) {
         String line;
         std::vector<Color> lineColor;
@@ -54,22 +59,16 @@ void cui::Image::set(const uint8_t* pixels, int32_t width, int32_t height, int32
             int i = (y * width + x) * channels;
             if (channels == 4) {
                 int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
-                if (a < 128) {
-                    lineColor.emplace_back();
-                    lineColor.emplace_back();
-                }
-                else {
-                    lineColor.emplace_back(0, 0, 0, 0, r, g, b, 0xff);
-                    lineColor.emplace_back(0, 0, 0, 0, r, g, b, 0xff);
-                }
+                lineColor.emplace_back(r, g, b, a);
+                lineColor.emplace_back(r, g, b, a);
             }
             else if (channels == 3) {
                 int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
-                lineColor.emplace_back(0, 0, 0, 0, r, g, b, 0xff);
-                lineColor.emplace_back(0, 0, 0, 0, r, g, b, 0xff);
+                lineColor.emplace_back(r, g, b, 0xff);
+                lineColor.emplace_back(r, g, b, 0xff);
             }
         }
-        colorBuffer.push_back(std::move(lineColor));
+        bkColorBuffer.push_back(std::move(lineColor));
     }
 }
 

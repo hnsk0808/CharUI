@@ -37,9 +37,14 @@ const std::vector<cui::String>& cui::Text::getCharBuffer() const
     return charBuffer;
 }
 
-const std::vector<std::vector<cui::Color>>& cui::Text::getColorBuffer() const
+const cui::FeColorBuffer& cui::Text::getFeColorBuffer() const
 {
-    return colorBuffer;
+    return feColorBuffer;
+}
+
+const cui::BkColorBuffer& cui::Text::getBkColorBuffer() const
+{
+    return bkColorBuffer;
 }
 
 void cui::Text::set(BytesView bytesView)

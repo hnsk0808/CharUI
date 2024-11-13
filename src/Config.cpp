@@ -3,7 +3,8 @@
 #include <cstdio>
 #include <cstdlib>
 
-cui::Color defaultColor(255, 255, 255, 0, 0, 0, 0, 0);
+cui::FeColor defaultFeColor(0xFFFFFFFF);
+cui::BkColor defaultBkColor(0x00000000);
 char paddingChar = ' ';
 
 void cui::init()
@@ -25,12 +26,22 @@ void cui::setPaddingChar(char c)
     paddingChar = c;
 }
 
-cui::Color cui::getDefaultColor()
+cui::FeColor cui::getDefaultFeColor()
 {
-    return defaultColor;
+    return defaultFeColor;
 }
 
-void cui::setDefaultColor(Color newColor)
+void cui::getDefaultFeColor(FeColor newColor)
 {
-    defaultColor = newColor;
+    defaultFeColor = newColor;
+}
+
+cui::BkColor cui::getDefaultBkColor()
+{
+    return defaultBkColor;
+}
+
+void cui::setDefaultBkColor(BkColor newColor)
+{
+    defaultBkColor = newColor;
 }

@@ -33,14 +33,15 @@ void cui::Page::display()
 
     canvas.clear();
     for (auto&& [p, c] : components) {
-        canvas.set(p.x, p.y, c->getCharBuffer(), c->getColorBuffer());
+        canvas.set(p.x, p.y, c->getCharBuffer(), c->getFeColorBuffer(), c->getBkColorBuffer());
     }
-    auto& data = canvas.getCharBuffer();
-    auto& colorBuffer = canvas.getColorBuffer();
+    auto& charBuffer = canvas.getCharBuffer();
+    auto& feColorBuffer = canvas.getFeColorBuffer();
+    auto& bkColorBuffer = canvas.getBkColorBuffer();
     
     printf("\x1B[0;0H");
     for (size_t i = 0; i < canvas.getHeight(); ++i) {
-        printf("%s", (data[i] | colorBuffer[i]).data());
+        printf("%s", applyColors(charBuffer[i], feColorBuffer[i], bkColorBuffer[i]).data());
     }
 }
 

@@ -45,8 +45,7 @@ static std::vector<cui::String> getCharImage(char c)
 class FPS : public cui::Component
 {
 public:
-    FPS(cui::OnUpdate& onUpdate)
-        : text("FPS: 0")
+    FPS(cui::OnUpdate& onUpdate) : text("FPS: 0")
     {
         onUpdate.connect(this, &FPS::update);
         lastTime = std::chrono::high_resolution_clock::now();
@@ -55,7 +54,8 @@ public:
     int32_t getWidth() const override { return text.getWidth(); }
     int32_t getHeight() const override { return text.getHeight(); }
     const std::vector<cui::String>& getCharBuffer() const override { return text.getCharBuffer(); }
-    const std::vector<std::vector<cui::Color>>& getColorBuffer() const { return text.getColorBuffer(); }
+    const cui::FeColorBuffer& getFeColorBuffer() const override { return text.getFeColorBuffer(); }
+    const cui::BkColorBuffer& getBkColorBuffer() const override { return text.getBkColorBuffer(); }
 
 private:
     cui::Text text;
@@ -117,7 +117,7 @@ int main()
         bkImage->set("../../asserts/textures/bk.jpeg", w / 2, h);
         for (auto& line : bkImage->get()) {
             for (auto& color : line) {
-                color.bk -= 0x000000AA;
+                color.value -= 0x000000AA;
             }
         }
         });
