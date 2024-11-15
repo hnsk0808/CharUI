@@ -50,7 +50,7 @@ void cui::Image::set(const uint8_t* pixels, int32_t w, int32_t h, int32_t channe
     width = w * 2;
     height = h;
     bkColorBuffer.clear();
-    for (int y = 0; y < height; ++y) {
+    for (int y = 0; y < h; ++y) {
         String line;
         std::vector<Color> lineColor;
         for (int x = 0; x < w; ++x) {

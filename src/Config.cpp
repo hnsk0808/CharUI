@@ -31,7 +31,7 @@ cui::FeColor cui::getDefaultFeColor()
     return defaultFeColor;
 }
 
-void cui::getDefaultFeColor(FeColor newColor)
+void cui::setDefaultFeColor(FeColor newColor)
 {
     defaultFeColor = newColor;
 }

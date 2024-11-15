@@ -10,7 +10,7 @@ char getPaddingChar();
 void setPaddingChar(char c);
 
 FeColor getDefaultFeColor();
-void getDefaultFeColor(FeColor newColor);
+void setDefaultFeColor(FeColor newColor);
 
 BkColor getDefaultBkColor();
 void setDefaultBkColor(BkColor newColor);

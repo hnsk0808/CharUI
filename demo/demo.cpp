@@ -78,8 +78,9 @@ private:
 int main() 
 {
     cui::init();
-    //cui::setPaddingChar('.');
-    //cui::setDefaultColor(cui::Color(0, 0, 0, 0, 255, 255, 255, 0));
+    cui::setPaddingChar('.');
+    cui::setDefaultFeColor(0x222222aa);
+    cui::setDefaultBkColor(0xaaddddaa);
     initFont("../../asserts/simhei.ttf");
     cui::Page page;
 
@@ -114,10 +115,10 @@ int main()
     page.set(70, offset, 1, apple);
 
     page.onResize.connect([&](int32_t w, int32_t h) {
-        bkImage->set("../../asserts/textures/bk.jpeg", w / 2, h);
+        bkImage->set("../../asserts/textures/bk.jpeg", static_cast<int32_t>(std::ceil(static_cast<double>(w) / 2.0)), h);
         for (auto& line : bkImage->get()) {
             for (auto& color : line) {
-                color.value -= 0x000000AA;
+                color.value -= 0x00000088;
             }
         }
         });

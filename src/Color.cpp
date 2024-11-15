@@ -1,18 +1,6 @@
 #include <CharUI/Utils/Color.h>
 #include <cstdlib>
 
-static cui::Bytes feColorToBytes(uint32_t color) {
-    char buf[32]{};
-    sprintf(buf, "\x1b[38;2;%d;%d;%dm", color >> 24 & 0xff, color >> 16 & 0xff, color >> 8 & 0xff);
-    return buf;
-}
-
-static cui::Bytes bkColorToBytes(uint32_t color) {
-    char buf[32]{};
-    sprintf(buf, "\x1b[48;2;%d;%d;%dm", color >> 24 & 0xff, color >> 16 & 0xff, color >> 8 & 0xff);
-    return buf;
-}
-
 cui::Color::Color() = default;
 
 cui::Color::Color(const Color& other) : value(other.value) {}
@@ -39,7 +27,9 @@ bool cui::Color::operator!=(const Color& other)
 
 cui::Bytes cui::applyColors(const String& str, const std::vector<FeColor>& feColorBuffer, const std::vector<BkColor>& bkColorBuffer)
 {
+    Bytes colorBytes = "\x1b[38;2;000;000;000m";
     Bytes ret;
+    ret.reserve(str.getSize() + colorBytes.size() * feColorBuffer.size() + colorBytes.size() * bkColorBuffer.size());
     FeColor lastFeColor;
     BkColor lastBkColor;
     auto strIt = str.begin();
@@ -48,11 +38,31 @@ cui::Bytes cui::applyColors(const String& str, const std::vector<FeColor>& feCol
     for (; strIt != str.end(); ++strIt) {
         if (lastFeColor != *feColorIt) {
             lastFeColor = *feColorIt;
-            ret += feColorToBytes(lastFeColor.value);
+            colorBytes[2] = '3';
+            colorBytes[7] = (lastFeColor.value >> 24 & 0xff) / 100 + '0';
+            colorBytes[8] = ((lastFeColor.value >> 24 & 0xff) / 10) % 10 + '0';
+            colorBytes[9] = (lastFeColor.value >> 24 & 0xff) % 10 + '0';
+            colorBytes[11] = (lastFeColor.value >> 16 & 0xff) / 100 + '0';
+            colorBytes[12] = ((lastFeColor.value >> 16 & 0xff) / 10) % 10 + '0';
+            colorBytes[13] = (lastFeColor.value >> 16 & 0xff) % 10 + '0';
+            colorBytes[15] = (lastFeColor.value >> 8 & 0xff) / 100 + '0';
+            colorBytes[16] = ((lastFeColor.value >> 8 & 0xff) / 10) % 10 + '0';
+            colorBytes[17] = (lastFeColor.value >> 8 & 0xff) % 10 + '0';
+            ret += colorBytes;
         }
         if (lastBkColor != *bkColorIt) {
             lastBkColor = *bkColorIt;
-            ret += bkColorToBytes(lastBkColor.value);
+            colorBytes[2] = '4';
+            colorBytes[7] = (lastBkColor.value >> 24 & 0xff) / 100 + '0';
+            colorBytes[8] = ((lastBkColor.value >> 24 & 0xff) / 10) % 10 + '0';
+            colorBytes[9] = (lastBkColor.value >> 24 & 0xff) % 10 + '0';
+            colorBytes[11] = (lastBkColor.value >> 16 & 0xff) / 100 + '0';
+            colorBytes[12] = ((lastBkColor.value >> 16 & 0xff) / 10) % 10 + '0';
+            colorBytes[13] = (lastBkColor.value >> 16 & 0xff) % 10 + '0';
+            colorBytes[15] = (lastBkColor.value >> 8 & 0xff) / 100 + '0';
+            colorBytes[16] = ((lastBkColor.value >> 8 & 0xff) / 10) % 10 + '0';
+            colorBytes[17] = (lastBkColor.value >> 8 & 0xff) % 10 + '0';
+            ret += colorBytes;
         }
         ret += takeFirstChar(strIt.ptr);
         // One Character One Color

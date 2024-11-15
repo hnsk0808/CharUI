@@ -16,25 +16,19 @@ static size_t utf8CharSize(char firstByte)
 size_t cui::charSize(const char* src)
 {
     assert(src);
-    size_t ret = 0;
-    for (; (ret < utf8CharSize(src[0])) && (src[ret] != 0); ++ret);
-    return ret;
+    return utf8CharSize(src[0]);
 }
 
 size_t cui::charWidth(const char* src)
 {
     assert(src);
-    size_t ret = 0;
-    for (; (ret < utf8CharSize(src[0])) && (src[ret] != 0); ++ret);
-    return static_cast<size_t>(wts8width(src, ret));
+    return static_cast<size_t>(wts8width(src, charSize(src)));
 }
 
 cui::Bytes cui::takeFirstChar(const char* src)
 {
     assert(src);
-    size_t ret = 0;
-    for (; (ret < utf8CharSize(src[0])) && (src[ret] != 0); ++ret);
-    return Bytes(src, ret);
+    return Bytes(src, utf8CharSize(src[0]));
 }
 
 cui::String::String() = default;
