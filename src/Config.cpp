@@ -9,7 +9,7 @@ char paddingChar = ' ';
 
 void cui::init()
 {
-    signal(SIGINT, [](int s) {
+    signal(SIGINT, [](int) noexcept {
         printf("\x1B[?25h");
         exit(0);
         });

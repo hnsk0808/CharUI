@@ -55,9 +55,9 @@ void cui::Text::set(BytesView bytesView)
     }
 }
 
-void cui::Text::set(const std::vector<String>& charBuffer)
+void cui::Text::set(const std::vector<String>& lines)
 {
-    this->charBuffer = charBuffer;
+    charBuffer = lines;
 }
 
 std::vector<cui::String>& cui::Text::get()

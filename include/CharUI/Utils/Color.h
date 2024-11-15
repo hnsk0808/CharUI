@@ -9,6 +9,7 @@ namespace cui {
 struct Color
 {
     Color();
+    Color(const Color& other);
     Color(uint32_t rgba);
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0xFF);
     Color& operator=(const Color& other);
@@ -24,5 +25,6 @@ using FeColorBuffer = std::vector<std::vector<FeColor>>;
 using BkColorBuffer = std::vector<std::vector<FeColor>>;
 
 Bytes applyColors(const String& str, const std::vector<FeColor>& feColorBuffer, const std::vector<BkColor>& bkColorBuffer);
+uint32_t blend(uint32_t color1, uint32_t color2);
 
 }

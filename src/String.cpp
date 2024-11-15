@@ -26,7 +26,7 @@ size_t cui::charWidth(const char* src)
     assert(src);
     size_t ret = 0;
     for (; (ret < utf8CharSize(src[0])) && (src[ret] != 0); ++ret);
-    return wts8width(src, ret);
+    return static_cast<size_t>(wts8width(src, ret));
 }
 
 cui::Bytes cui::takeFirstChar(const char* src)
@@ -39,19 +39,19 @@ cui::Bytes cui::takeFirstChar(const char* src)
 
 cui::String::String() = default;
 
-cui::String::String(const String& str) : bytes(str.bytes) {}
+cui::String::String(const String& other) : bytes(other.bytes) {}
 
 cui::String::String(const ConstIterator& first, const ConstIterator& last) : String(Bytes(first.ptr, last.ptr)) {}
 
-cui::String::String(const Bytes& bytes) : bytes(bytes) { 
-    for (auto& byte : this->bytes) {
+cui::String::String(const Bytes& cstr) : bytes(cstr) {
+    for (auto& byte : bytes) {
         if (byte == '\n' || byte == '\t') {
             byte = ' ';
         }
     }
 }
 
-cui::String::String(const char* bytes) : String(Bytes(bytes)) {}
+cui::String::String(const char* cstr) : String(Bytes(cstr)) {}
 
 cui::String::String(BytesView bytesView) : String(Bytes(bytesView)) {}
 

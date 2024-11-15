@@ -18,9 +18,9 @@ public:
         ConstIterator(const char* ptr) : ptr(ptr) {}
         const char* operator*() const { return ptr; }
         ConstIterator& operator++() { ptr += charSize(ptr); return *this; }
-        ConstIterator operator+(size_t offset) const { auto ret = *this; ret.ptr += offset; return ret; }
-        ConstIterator operator-(size_t offset) const { auto ret = *this; ret.ptr -= offset; return ret; }
-        size_t operator-(const ConstIterator& other) const { return ptr - other.ptr; }
+        ConstIterator operator+(size_t offset) const { ConstIterator ret = *this; ret.ptr += offset; return ret; }
+        ConstIterator operator-(size_t offset) const { ConstIterator ret = *this; ret.ptr -= offset; return ret; }
+        size_t operator-(const ConstIterator& other) const { return static_cast<size_t>(ptr - other.ptr); }
         bool operator==(const ConstIterator& other) const { return ptr == other.ptr; }
         std::strong_ordering operator<=>(const ConstIterator& other) const { return ptr <=> other.ptr; }
         const char* ptr; // => cgui::string::bytes
@@ -31,10 +31,10 @@ public:
         Iterator(const char* ptr) : ConstIterator(ptr) {}
         char* operator*() const { return const_cast<char*>(ptr); }
         Iterator& operator++() { ptr += charSize(ptr); return *this; }
-        Iterator operator+(size_t offset) const { auto ret = *this; ret.ptr += offset; return ret; }
+        Iterator operator+(size_t offset) const { Iterator ret = *this; ret.ptr += offset; return ret; }
         using ConstIterator::operator-;
-        Iterator operator-(size_t offset) const { auto ret = *this; ret.ptr -= offset; return ret; }
-        size_t operator-(const Iterator& other) const { return ptr - other.ptr; }
+        Iterator operator-(size_t offset) const { Iterator ret = *this; ret.ptr -= offset; return ret; }
+        size_t operator-(const Iterator& other) const { return static_cast<size_t>(ptr - other.ptr); }
         using ConstIterator::operator==;
         bool operator==(const Iterator& other) const { return ptr == other.ptr; }
         using ConstIterator::operator<=>;
@@ -47,10 +47,10 @@ public:
 
 public:
     String();
-    String(const String& str);
+    String(const String& other);
     String(const ConstIterator& first, const ConstIterator& last);
-    String(const Bytes& bytes);
-    String(const char* bytes);
+    String(const Bytes& cstr);
+    String(const char* cstr);
     String(BytesView bytesView);
     String(size_t count, char c);
 

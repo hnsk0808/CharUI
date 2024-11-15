@@ -1,8 +1,6 @@
 #include <CharUI/Component/Image.h>
 #include <filesystem>
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
-#define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include <stb/stb_image_resize.h>
 
 cui::Image::Image() = default;
@@ -12,9 +10,9 @@ cui::Image::Image(BytesView path)
     set(path);
 }
 
-cui::Image::Image(BytesView path, int32_t width, int32_t height)
+cui::Image::Image(BytesView path, int32_t w, int32_t h)
 {
-    set(path, width, height);
+    set(path, w, h);
 }
 
 int32_t cui::Image::getWidth() const
@@ -47,16 +45,16 @@ std::vector<std::vector<cui::Color>>& cui::Image::get()
     return bkColorBuffer;
 }
 
-void cui::Image::set(const uint8_t* pixels, int32_t width, int32_t height, int32_t channels)
+void cui::Image::set(const uint8_t* pixels, int32_t w, int32_t h, int32_t channels)
 {
-    this->width = width * 2;
-    this->height = height;
+    width = w * 2;
+    height = h;
     bkColorBuffer.clear();
     for (int y = 0; y < height; ++y) {
         String line;
         std::vector<Color> lineColor;
-        for (int x = 0; x < width; ++x) {
-            int i = (y * width + x) * channels;
+        for (int x = 0; x < w; ++x) {
+            int i = (y * w + x) * channels;
             if (channels == 4) {
                 int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
                 lineColor.emplace_back(r, g, b, a);
@@ -77,16 +75,16 @@ void cui::Image::set(BytesView path)
     std::filesystem::path p(path);
     bool isPng = p.extension() == ".png";
 
-    int width = 0, height = 0, channels = 0;
-    auto pixels = stbi_load(path.data(), &width, &height, &channels, isPng ? STBI_rgb_alpha : STBI_rgb);
+    int w = 0, h = 0, channels = 0;
+    auto pixels = stbi_load(path.data(), &w, &h, &channels, isPng ? STBI_rgb_alpha : STBI_rgb);
     if (!pixels) {
         return;
     }
-    set(pixels, width, height, channels);
+    set(pixels, w, h, channels);
     stbi_image_free(pixels);
 }
 
-void cui::Image::set(BytesView path, int32_t width, int32_t height)
+void cui::Image::set(BytesView path, int32_t w, int32_t h)
 {
     std::filesystem::path p(path);
     bool isPng = p.extension() == ".png";
@@ -99,12 +97,12 @@ void cui::Image::set(BytesView path, int32_t width, int32_t height)
         if (!rawPixels) {
             return;
         }
-        pixels = new stbi_uc[width * height * channels];
-        stbir_resize_uint8(rawPixels, srcWidth, srcHeight, 0, pixels, width, height, 0, channels);
+        pixels = new stbi_uc[static_cast<size_t>(w * h * channels)];
+        stbir_resize_uint8(rawPixels, srcWidth, srcHeight, 0, pixels, w, h, 0, channels);
     }
     if (!pixels) {
         return;
     }
-    set(pixels, width, height, channels);
+    set(pixels, w, h, channels);
     stbi_image_free(pixels);
 }

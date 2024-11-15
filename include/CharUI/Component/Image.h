@@ -10,7 +10,7 @@ class Image : public Component
 public:
     Image();
     Image(BytesView path);
-    Image(BytesView path, int32_t width, int32_t height);
+    Image(BytesView path, int32_t w, int32_t h);
     
     int32_t getWidth() const override;
     int32_t getHeight() const override;
@@ -19,9 +19,9 @@ public:
     const BkColorBuffer& getBkColorBuffer() const override;
 
     std::vector<std::vector<Color>>& get();
-    void set(const uint8_t* pixels, int32_t width, int32_t height, int32_t channels);
+    void set(const uint8_t* pixels, int32_t w, int32_t h, int32_t channels);
     void set(BytesView path);
-    void set(BytesView path, int32_t width, int32_t height);
+    void set(BytesView path, int32_t w, int32_t h);
 
 private:
     int32_t width = 0;

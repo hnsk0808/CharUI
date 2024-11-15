@@ -10,6 +10,7 @@ namespace cui
 class Component
 {
 public:
+    virtual ~Component() {};
     virtual int32_t getWidth() const = 0;
     virtual int32_t getHeight() const = 0;
     virtual const std::vector<String>& getCharBuffer() const = 0;
