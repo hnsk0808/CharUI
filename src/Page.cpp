@@ -2,6 +2,11 @@
 #include <CharUI/Utils/Terminal.h>
 #include <cstdio>
 
+bool cui::operator<(Pos lhs, Pos rhs)
+{
+    return (lhs.y < rhs.y) || (lhs.y == rhs.y && lhs.x < rhs.x);
+}
+
 cui::Page::Page()
 {
     onResize.connect([this](int32_t w, int32_t h) { canvas.resize(w, h); });
@@ -24,6 +29,8 @@ void cui::Page::update()
 
 void cui::Page::display()
 {
+    canvas.clear();
+
     int32_t newWidth = 0, newHeight = 0;
     terminalSize(&newWidth, &newHeight);
     if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
@@ -31,9 +38,10 @@ void cui::Page::display()
         terminalClear();
     }
 
-    canvas.clear();
-    for (auto&& [p, c] : components) {
-        canvas.set(p.x, p.y, c->getCharBuffer(), c->getFeColorBuffer(), c->getBkColorBuffer());
+    for (auto&& [_, layer] : layers) {
+        for (auto&& [p, c] : layer) {
+            canvas.set(p.x, p.y, c->getCharBuffer(), c->getFeColorBuffer(), c->getBkColorBuffer());
+        }
     }
     auto& charBuffer = canvas.getCharBuffer();
     auto& feColorBuffer = canvas.getFeColorBuffer();
@@ -47,25 +55,36 @@ void cui::Page::display()
 
 void cui::Page::set(int32_t x, int32_t y, int32_t z, std::shared_ptr<Component> src)
 {
-    components[{ x, y, z }] = src;
+    layers[z][{ x, y }] = src;
 }
 
 void cui::Page::erase(int32_t x, int32_t y, int32_t z)
 {
-    components.erase({ x, y, z });
+    if (auto it = layers.find(z); it != layers.end()) {
+        it->second.erase({ x, y });
+        if (it->second.empty()) {
+            layers.erase(it);
+        }
+    }
 }
 
 void cui::Page::clear()
 {
-    components.clear();
+    layers.clear();
 }
 
 std::shared_ptr<cui::Component> cui::Page::get(int32_t x, int32_t y, int32_t z)
 {
-    return components.at({ x, y, z });
+    if (auto it = layers.find(z); it != layers.end()) {
+        return it->second.at({ x, y });
+    }
+    return nullptr;
 }
 
 std::shared_ptr<const cui::Component> cui::Page::get(int32_t x, int32_t y, int32_t z) const
 {
-    return components.at({ x, y, z });
+    if (auto it = layers.find(z); it != layers.end()) {
+        return it->second.at({ x, y });
+    }
+    return nullptr;
 }

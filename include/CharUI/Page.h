@@ -1,7 +1,6 @@
 #pragma once
 #include "Component/Canvas.h"
 #include "Component/Image.h"
-#include "Utils/Pos.h"
 #include "Signals.h"
 #include <map>
 #include <memory>
@@ -10,6 +9,14 @@
 
 namespace cui
 {
+
+struct Pos
+{
+    int32_t x, y;
+
+    bool operator==(const Pos& other) { return (x == other.x) && (y == other.y); }
+};
+bool operator<(Pos lhs, Pos rhs);
 
 class Page
 {
@@ -31,7 +38,8 @@ public:
     OnResize onResize;
 
 private:
-    std::map<Pos, std::shared_ptr<Component>> components;
+    using Layer = std::map<Pos, std::shared_ptr<Component>>;
+    std::map<int32_t, Layer> layers;
     Canvas canvas = Canvas(0, 0);
 };
 
