@@ -1,9 +1,9 @@
 #include <CharUI/Component/Canvas.h>
-#include <CharUI/Config.h>
+#include <CharUI/CharUI.h>
 
 cui::Canvas::Canvas(int32_t width, int32_t height)
-    : width(width), height(height), charBuffer(height, String(width, getPaddingChar())), 
-    feColorBuffer(height, std::vector(width, getDefaultFeColor())), bkColorBuffer(height, std::vector(width, getDefaultBkColor()))
+    : width(width), height(height), charBuffer(height, String(width, getGlobalPaddingChar())), 
+    feColorBuffer(height, std::vector(width, getGlobalFeColor())), bkColorBuffer(height, std::vector(width, getGlobalBkColor()))
 {}
 
 int32_t cui::Canvas::getWidth() const
@@ -33,27 +33,23 @@ const std::vector<std::vector<cui::BkColor>>& cui::Canvas::getBkColorBuffer() co
 
 void cui::Canvas::clear()
 {
-    charBuffer.assign(height, String(width, getPaddingChar()));
-    feColorBuffer.assign(height, std::vector(width, getDefaultFeColor()));
-    bkColorBuffer.assign(height, std::vector(width, getDefaultBkColor()));
+    charBuffer.assign(height, String(width, getGlobalPaddingChar()));
+    feColorBuffer.assign(height, std::vector(width, getGlobalFeColor()));
+    bkColorBuffer.assign(height, std::vector(width, getGlobalBkColor()));
 }
 
 void cui::Canvas::resize(int32_t w, int32_t h)
 {
     width = w;
     height = h;
-    charBuffer.resize(height, String(width, getPaddingChar()));
-    feColorBuffer.resize(height, std::vector(width, getDefaultFeColor()));
-    bkColorBuffer.resize(height, std::vector(width, getDefaultBkColor()));
+    charBuffer.resize(height, String(width, getGlobalPaddingChar()));
+    feColorBuffer.resize(height, std::vector(width, getGlobalFeColor()));
+    bkColorBuffer.resize(height, std::vector(width, getGlobalBkColor()));
 }
 
-void cui::Canvas::set(int32_t x, int32_t y, const std::vector<String>& charBuf, const FeColorBuffer& feColorBuf, const BkColorBuffer& bkColorBuf)
+void cui::Canvas::setCharBuffer(int32_t x, int32_t y, const std::vector<String>& charBuf)
 {
-    if (x >= width || y >= height) {
-        return;
-    }
-
-    // Char Buffer
+    if (x >= width || y >= height) { return; }
     int32_t outHeight = static_cast<int32_t>(charBuf.size());
     if (outHeight + y > height) {
         outHeight = height - (y >= 0 ? y : 0);
@@ -73,8 +69,11 @@ void cui::Canvas::set(int32_t x, int32_t y, const std::vector<String>& charBuf, 
             charBuffer[static_cast<size_t>(i + y)].replaceW(0, charBuf[i].takeW(-x, srcLineWidth + x));
         }
     }
+}
 
-    // FeColor Buffer
+void cui::Canvas::setFeColorBuffer(int32_t x, int32_t y, const FeColorBuffer& feColorBuf)
+{
+    if (x >= width || y >= height) { return; }
     for (int32_t i = 0; i < static_cast<int32_t>(feColorBuf.size()); ++i) {
         if (y + i >= static_cast<int32_t>(feColorBuffer.size())) {
             break;
@@ -92,8 +91,11 @@ void cui::Canvas::set(int32_t x, int32_t y, const std::vector<String>& charBuf, 
             feColorBuffer[y + i][x + j].value = blend(feColorBuffer[y + i][x + j].value, feColorBuf[i][j].value);
         }
     }
+}
 
-    // BkColor Buffer
+void cui::Canvas::setBkColorBuffer(int32_t x, int32_t y, const BkColorBuffer& bkColorBuf)
+{
+    if (x >= width || y >= height) { return; }
     for (int32_t i = 0; i < static_cast<int32_t>(bkColorBuf.size()); ++i) {
         if (y + i >= static_cast<int32_t>(bkColorBuffer.size())) {
             break;

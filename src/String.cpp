@@ -1,5 +1,5 @@
 #include <CharUI/Utils/String.h>
-#include <CharUI/Config.h>
+#include <CharUI/CharUI.h>
 #include <cassert>
 #include <wtswidth/wtswidth.h>
 #include <format>
@@ -103,7 +103,7 @@ cui::String cui::String::takeW(const ConstIterator& first, size_t w) const
     assert(first >= begin() && first <= end());
     if (w == 0) { return {}; }
     auto [last, currentWidth] = wPos1(first, w);
-    return Bytes(first.ptr, last.ptr) + Bytes(w - currentWidth, getPaddingChar());
+    return Bytes(first.ptr, last.ptr) + Bytes(w - currentWidth, getGlobalPaddingChar());
 }
 
 cui::String cui::String::takeW(size_t index, size_t w) const

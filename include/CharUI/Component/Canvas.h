@@ -21,7 +21,9 @@ public:
     
     void clear();
     void resize(int32_t w, int32_t h);
-    void set(int32_t x, int32_t y, const std::vector<String>& charBuf, const FeColorBuffer& feColorBuf, const BkColorBuffer& bkColorBuf);
+    void setCharBuffer(int32_t x, int32_t y, const std::vector<String>& charBuf);
+    void setFeColorBuffer(int32_t x, int32_t y, const FeColorBuffer& feColorBuf);
+    void setBkColorBuffer(int32_t x, int32_t y, const BkColorBuffer& bkColorBuf);
 
 private:
     int32_t width;
