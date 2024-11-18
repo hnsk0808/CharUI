@@ -1,6 +1,6 @@
 #include <CharUI/Charui.h>
-#include <cstdio>
 #include <CharUI/Utils/Terminal.h>
+#include <cstdio>
 
 cui::FeColor globalFeColor(0xFFFFFFFF);
 cui::BkColor globalBkColor(0x00000000);
@@ -14,6 +14,11 @@ void cui::hideCursor()
 void cui::showCursor()
 {
     printf("\x1B[?25h");
+}
+
+void cui::moveCursorToBeginning()
+{
+    printf("\x1B[1;1H");
 }
 
 char cui::getGlobalPaddingChar()
@@ -46,12 +51,9 @@ void cui::setGlobalBkColor(BkColor newColor)
     globalBkColor = newColor;
 }
 
-void cui::printComponent(const Component& component)
+void cui::printComponent(const std::vector<String>& charBuf, const FeColorBuffer& feColorBuf, const BkColorBuffer& bkColorBuf)
 {
-    auto& charBuffer = component.getCharBuffer();
-    auto& feColorBuffer = component.getFeColorBuffer();
-    auto& bkColorBuffer = component.getBkColorBuffer();
-    for (size_t i = 0; i < component.getHeight(); ++i) {
-        printf("%s", applyColors(charBuffer[i], feColorBuffer[i], bkColorBuffer[i]).data());
+    for (size_t i = 0; i < charBuf.size(); ++i) {
+        printf(applyColors(charBuf[i], feColorBuf[i], bkColorBuf[i]).data());
     }
 }

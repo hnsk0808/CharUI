@@ -1,22 +1,21 @@
 #pragma once
+#include <CharUI/Utils/Color.h>
+#include <CharUI/Utils/String.h>
 #include <vector>
-#include "Component.h"
 
 namespace cui
 {
 
-class Image : public Component
+class Image
 {
 public:
     Image();
     Image(BytesView path);
     Image(BytesView path, int32_t w, int32_t h);
     
-    int32_t getWidth() const override;
-    int32_t getHeight() const override;
-    const std::vector<String>& getCharBuffer() const override;
-    const FeColorBuffer& getFeColorBuffer() const override;
-    const BkColorBuffer& getBkColorBuffer() const override;
+    int32_t getWidth() const;
+    int32_t getHeight() const;
+    const BkColorBuffer& getBkColorBuffer() const;
 
     std::vector<std::vector<Color>>& get();
     void set(const uint8_t* pixels, int32_t w, int32_t h, int32_t channels);
@@ -26,8 +25,6 @@ public:
 private:
     int32_t width = 0;
     int32_t height = 0;
-    std::vector<String> charBuffer;
-    FeColorBuffer feColorBuffer;
     BkColorBuffer bkColorBuffer;
 };
 

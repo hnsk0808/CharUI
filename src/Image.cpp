@@ -25,16 +25,6 @@ int32_t cui::Image::getHeight() const
     return height;
 }
 
-const std::vector<cui::String>& cui::Image::getCharBuffer() const
-{
-    return charBuffer;
-}
-
-const cui::FeColorBuffer& cui::Image::getFeColorBuffer() const
-{
-    return feColorBuffer;
-}
-
 const cui::BkColorBuffer& cui::Image::getBkColorBuffer() const
 {
     return bkColorBuffer;

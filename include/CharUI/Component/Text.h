@@ -1,21 +1,21 @@
 ﻿#pragma once
-#include "Component.h"
+#include <CharUI/Utils/String.h>
+#include <vector>
 
 namespace cui
 {
 
-class Text : public Component {
+class Text
+{
 public:
     Text(BytesView bytesView);
     Text(const char* str);
     Text(const String& str);
     Text(const std::vector<String>& lines);
 
-    int32_t getWidth() const override;
-    int32_t getHeight() const override;
-    const std::vector<String>& getCharBuffer() const override;
-    const FeColorBuffer& getFeColorBuffer() const override;
-    const BkColorBuffer& getBkColorBuffer() const override;
+    int32_t getWidth() const;
+    int32_t getHeight() const;
+    const std::vector<String>& getCharBuffer() const;
 
     void set(BytesView bytesView);
     void set(const std::vector<String>& lines);
@@ -28,8 +28,6 @@ public:
 
 private:
     std::vector<String> charBuffer;
-    FeColorBuffer feColorBuffer;
-    BkColorBuffer bkColorBuffer;
 };
 
 }

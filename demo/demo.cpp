@@ -112,26 +112,22 @@ int main()
             }
         }
         {
-            std::vector<std::shared_ptr<cui::Component>> hBox = {
-                cui::image(diamondSword),
-                cui::text(getCharImage('C')),
-                cui::text(getCharImage('U')),
-                cui::text(getCharImage('I')),
-                cui::text("CharUI是跨平台的控制台UI库😊\nCharUI支持UTF8字符😊")
-            };
             int32_t w = 0;
-            for (auto&& c : hBox) {
-                canvas.setCharBuffer(w, 0, c->getCharBuffer());
-                canvas.setFeColorBuffer(w, 0, c->getFeColorBuffer());
-                canvas.setBkColorBuffer(w, 0, c->getBkColorBuffer());
-                w += c->getWidth() + 3;
-            }
+            canvas.setBkColorBuffer(w, 0, diamondSword.getBkColorBuffer());
+            w += diamondSword.getWidth() + 3;
+            canvas.setCharBuffer(w, 0, cui::Text(getCharImage('C')).getCharBuffer());
+            w += 14;
+            canvas.setCharBuffer(w, 0, cui::Text(getCharImage('U')).getCharBuffer());
+            w += 14;
+            canvas.setCharBuffer(w, 0, cui::Text(getCharImage('I')).getCharBuffer());
+            w += 14;
+            canvas.setCharBuffer(w, 0, cui::Text("CharUI是跨平台的控制台UI库😊\nCharUI支持UTF8字符😊").getCharBuffer());
         }
         {
             canvas.setCharBuffer(0, 16, fps.getCharBuffer());
         }
-        printf("\x1B[1;1H");
-        cui::printComponent(canvas);
+        cui::moveCursorToBeginning();
+        cui::printComponent(canvas.getCharBuffer(), canvas.getFeColorBuffer(), canvas.getBkColorBuffer());
         // std::this_thread::sleep_for(100ms);
     }
     return 0;

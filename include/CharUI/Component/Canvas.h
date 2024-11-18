@@ -1,23 +1,22 @@
 #pragma once
-#include "Component.h"
-#include "../Utils/Color.h"
-#include "../Utils/String.h"
+#include <CharUI/Utils/Color.h>
+#include <CharUI/Utils/String.h>
 #include <memory>
 #include <vector>
 
 namespace cui
 {
 
-class Canvas : public Component
+class Canvas
 {
 public:
     Canvas(int32_t width, int32_t height);
 
-    int32_t getWidth() const override;
-    int32_t getHeight() const override;
-    const std::vector<String>& getCharBuffer() const override;
-    const FeColorBuffer& getFeColorBuffer() const override;
-    const BkColorBuffer& getBkColorBuffer() const override;
+    int32_t getWidth() const;
+    int32_t getHeight() const;
+    const std::vector<String>& getCharBuffer() const;
+    const FeColorBuffer& getFeColorBuffer() const;
+    const BkColorBuffer& getBkColorBuffer() const;
     
     void clear();
     void resize(int32_t w, int32_t h);

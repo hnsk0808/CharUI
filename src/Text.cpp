@@ -37,16 +37,6 @@ const std::vector<cui::String>& cui::Text::getCharBuffer() const
     return charBuffer;
 }
 
-const cui::FeColorBuffer& cui::Text::getFeColorBuffer() const
-{
-    return feColorBuffer;
-}
-
-const cui::BkColorBuffer& cui::Text::getBkColorBuffer() const
-{
-    return bkColorBuffer;
-}
-
 void cui::Text::set(BytesView bytesView)
 {
     charBuffer.clear();

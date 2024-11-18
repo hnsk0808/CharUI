@@ -3,7 +3,7 @@
 
 #define CHARUI_MAJOR_VERSION 0
 #define CHARUI_MINOR_VERSION 0
-#define CHARUI_PATCH_VERSION 2
+#define CHARUI_PATCH_VERSION 3
 
 #include "Component/Canvas.h"
 #include "Component/Image.h"
@@ -17,6 +17,7 @@ namespace cui
 
 void hideCursor();
 void showCursor();
+void moveCursorToBeginning();
 
 char getGlobalPaddingChar();
 void setGlobalPaddingChar(char c);
@@ -27,16 +28,7 @@ void setGlobalFeColor(FeColor newColor);
 BkColor getGlobalBkColor();
 void setGlobalBkColor(BkColor newColor);
 
-void printComponent(const Component& component);
-
-template<class...T>
-auto canvas(T&&...t) { return std::make_shared<Canvas>(std::forward<T>(t)...); }
-
-template<class...T>
-auto image(T&&...t) { return std::make_shared<Image>(std::forward<T>(t)...); }
-
-template<class...T>
-auto text(T&&...t) { return std::make_shared<Text>(std::forward<T>(t)...); }
+void printComponent(const std::vector<String>& charBuf, const FeColorBuffer& feColorBuf, const BkColorBuffer& bkColorBuf);
 
 }
 
