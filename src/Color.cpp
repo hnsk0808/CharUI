@@ -17,7 +17,7 @@ cui::Color& cui::Color::operator=(const Color& other)
 
 bool cui::Color::operator==(const Color& other)
 {
-    return value = other.value;
+    return value == other.value;
 }
 
 bool cui::Color::operator!=(const Color& other)

@@ -43,30 +43,6 @@ static std::vector<cui::String> getCharImage(char c)
     return image;
 }
 
-class FPS
-{
-public:
-    FPS() : text("FPS: 0") {}
-    const std::vector<cui::String>& getCharBuffer() const { return text.getCharBuffer(); }
-    void update()
-    {
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        ++frameCount;
-        if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastTime).count() >= 1) {
-            text[0] = cui::String(cui::Bytes("FPS: ") + std::to_string(frameCount));
-            fps = frameCount;
-            frameCount = 0;
-            lastTime = currentTime;
-        }
-    }
-
-private:
-    cui::Text text;
-    std::chrono::high_resolution_clock::time_point lastTime;
-    int fps = 0;
-    int frameCount = 0;
-};
-
 int main()
 {
     signal(SIGINT, [](int) noexcept {
@@ -78,29 +54,46 @@ int main()
     cui::setGlobalFeColor(0x222222aa);
     cui::setGlobalBkColor(0xaaddddaa);
     initFont("../../asserts/simhei.ttf");
-    cui::Canvas canvas(0, 0);
 
+    cui::Canvas canvas(0, 0);
     cui::Image bkImage;
     cui::Image diamondSword("../../asserts/textures/diamond_sword.png");
     cui::Image apple("../../asserts/textures/apple.png");
     int32_t appleOffset = 0;
-    FPS fps;
+    cui::Text fpsText("FPS: 0");
+
+    int fps = 0, frameCount = 0;
+    std::chrono::high_resolution_clock::time_point lastTime;
     while (true) {
-        int32_t newWidth = 0, newHeight = 0;
-        cui::terminalSize(&newWidth, &newHeight);
-        if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
-            bkImage.set("../../asserts/textures/bk.jpeg", static_cast<int32_t>(std::ceil(static_cast<double>(newWidth) / 2.0)), newHeight);
-            for (auto& line : bkImage.get()) {
-                for (auto& color : line) {
-                    color.value -= 0x00000088;
+        // Deal Terminal Resize
+        {
+            int32_t newWidth = 0, newHeight = 0;
+            cui::terminalSize(&newWidth, &newHeight);
+            if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
+                bkImage.set("../../asserts/textures/bk.jpeg", static_cast<int32_t>(std::ceil(static_cast<double>(newWidth) / 2.0)), newHeight);
+                for (auto& line : bkImage.get()) {
+                    for (auto& color : line) {
+                        color.value -= 0x00000088;
+                    }
                 }
+                canvas.resize(newWidth, newHeight);
+                cui::terminalClear();
             }
-            canvas.resize(newWidth, newHeight);
-            cui::terminalClear();
         }
-
-        fps.update();
-
+        
+        // Update FPS
+        {
+            auto currentTime = std::chrono::high_resolution_clock::now();
+            ++frameCount;
+            if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastTime).count() >= 1) {
+                fpsText = cui::String(cui::Bytes("FPS: ") + std::to_string(frameCount));
+                fps = frameCount;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+        }
+        
+        // Update Canvas
         canvas.clear();
         {
             canvas.setBkColorBuffer(0, 0, bkImage.getBkColorBuffer());
@@ -124,10 +117,13 @@ int main()
             canvas.setCharBuffer(w, 0, cui::Text("CharUI是跨平台的控制台UI库😊\nCharUI支持UTF8字符😊").getCharBuffer());
         }
         {
-            canvas.setCharBuffer(0, 16, fps.getCharBuffer());
+            canvas.setCharBuffer(0, 16, fpsText.getCharBuffer());
         }
+
+        // Print Canvas
         cui::moveCursorToBeginning();
         cui::printComponent(canvas.getCharBuffer(), canvas.getFeColorBuffer(), canvas.getBkColorBuffer());
+       
         // std::this_thread::sleep_for(100ms);
     }
     return 0;
