@@ -1,17 +1,17 @@
 #include <CharUI/Component/Canvas.h>
 #include <CharUI/CharUI.h>
 
-cui::Canvas::Canvas(int32_t width, int32_t height)
-    : width(width), height(height), charBuffer(height, String(width, getGlobalPaddingChar())), 
-    feColorBuffer(height, std::vector(width, getGlobalFeColor())), bkColorBuffer(height, std::vector(width, getGlobalBkColor()))
+cui::Canvas::Canvas(uint32_t w, uint32_t h)
+    : width(w), height(h), charBuffer(h, String(w, getGlobalPaddingChar())),
+    feColorBuffer(h, std::vector(w, getGlobalFeColor())), bkColorBuffer(h, std::vector(w, getGlobalBkColor()))
 {}
 
-int32_t cui::Canvas::getWidth() const
+uint32_t cui::Canvas::getWidth() const
 {
     return width;
 }
 
-int32_t cui::Canvas::getHeight() const
+uint32_t cui::Canvas::getHeight() const
 {
     return height;
 }
@@ -21,12 +21,12 @@ const std::vector<cui::String>& cui::Canvas::getCharBuffer() const
     return charBuffer;
 }
 
-const std::vector<std::vector<cui::FeColor>>& cui::Canvas::getFeColorBuffer() const
+const std::vector<std::vector<cui::Color>>& cui::Canvas::getFeColorBuffer() const
 {
     return feColorBuffer;
 }
 
-const std::vector<std::vector<cui::BkColor>>& cui::Canvas::getBkColorBuffer() const
+const std::vector<std::vector<cui::Color>>& cui::Canvas::getBkColorBuffer() const
 {
     return bkColorBuffer;
 }
@@ -38,7 +38,7 @@ void cui::Canvas::clear()
     bkColorBuffer.assign(height, std::vector(width, getGlobalBkColor()));
 }
 
-void cui::Canvas::resize(int32_t w, int32_t h)
+void cui::Canvas::resize(uint32_t w, uint32_t h)
 {
     width = w;
     height = h;
@@ -50,7 +50,7 @@ void cui::Canvas::resize(int32_t w, int32_t h)
 void cui::Canvas::setCharBuffer(int32_t x, int32_t y, const std::vector<String>& charBuf)
 {
     if (x >= width || y >= height) { return; }
-    int32_t outHeight = static_cast<int32_t>(charBuf.size());
+    uint32_t outHeight = static_cast<uint32_t>(charBuf.size());
     if (outHeight + y > height) {
         outHeight = height - (y >= 0 ? y : 0);
     }
@@ -71,7 +71,7 @@ void cui::Canvas::setCharBuffer(int32_t x, int32_t y, const std::vector<String>&
     }
 }
 
-void cui::Canvas::setFeColorBuffer(int32_t x, int32_t y, const FeColorBuffer& feColorBuf)
+void cui::Canvas::setFeColorBuffer(int32_t x, int32_t y, const ColorBuffer& feColorBuf)
 {
     if (x >= width || y >= height) { return; }
     for (int32_t i = 0; i < static_cast<int32_t>(feColorBuf.size()); ++i) {
@@ -88,12 +88,12 @@ void cui::Canvas::setFeColorBuffer(int32_t x, int32_t y, const FeColorBuffer& fe
             else if (x + j < 0) {
                 continue;
             }
-            feColorBuffer[y + i][x + j].value = blend(feColorBuffer[y + i][x + j].value, feColorBuf[i][j].value);
+            feColorBuffer[y + i][x + j] = blend(feColorBuffer[y + i][x + j], feColorBuf[i][j]);
         }
     }
 }
 
-void cui::Canvas::setBkColorBuffer(int32_t x, int32_t y, const BkColorBuffer& bkColorBuf)
+void cui::Canvas::setBkColorBuffer(int32_t x, int32_t y, const ColorBuffer& bkColorBuf)
 {
     if (x >= width || y >= height) { return; }
     for (int32_t i = 0; i < static_cast<int32_t>(bkColorBuf.size()); ++i) {
@@ -110,7 +110,7 @@ void cui::Canvas::setBkColorBuffer(int32_t x, int32_t y, const BkColorBuffer& bk
             else if (x + j < 0) {
                 continue;
             }
-            bkColorBuffer[y + i][x + j].value = blend(bkColorBuffer[y + i][x + j].value, bkColorBuf[i][j].value);
+            bkColorBuffer[y + i][x + j] = blend(bkColorBuffer[y + i][x + j], bkColorBuf[i][j]);
         }
     }
 }

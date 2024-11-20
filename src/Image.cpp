@@ -25,38 +25,37 @@ int32_t cui::Image::getHeight() const
     return height;
 }
 
-const cui::BkColorBuffer& cui::Image::getBkColorBuffer() const
+const cui::ColorBuffer& cui::Image::getColorBuffer() const
 {
-    return bkColorBuffer;
+    return colorBuffer;
 }
 
-std::vector<std::vector<cui::Color>>& cui::Image::get()
+cui::ColorBuffer& cui::Image::getColorBuffer()
 {
-    return bkColorBuffer;
+    return colorBuffer;
 }
 
 void cui::Image::set(const uint8_t* pixels, int32_t w, int32_t h, int32_t channels)
 {
     width = w * 2;
     height = h;
-    bkColorBuffer.clear();
+    colorBuffer.clear();
     for (int y = 0; y < h; ++y) {
-        String line;
-        std::vector<Color> lineColor;
+        std::vector<Color> line;
         for (int x = 0; x < w; ++x) {
             int i = (y * w + x) * channels;
             if (channels == 4) {
-                int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
-                lineColor.emplace_back(r, g, b, a);
-                lineColor.emplace_back(r, g, b, a);
+                uint8_t r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
+                line.emplace_back(RGBA(r, g, b, a));
+                line.emplace_back(RGBA(r, g, b, a));
             }
             else if (channels == 3) {
-                int r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
-                lineColor.emplace_back(r, g, b, 0xff);
-                lineColor.emplace_back(r, g, b, 0xff);
+                uint8_t r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
+                line.emplace_back(RGBA(r, g, b, 0xFF));
+                line.emplace_back(RGBA(r, g, b, 0xFF));
             }
         }
-        bkColorBuffer.push_back(std::move(lineColor));
+        colorBuffer.push_back(std::move(line));
     }
 }
 

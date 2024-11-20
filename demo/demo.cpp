@@ -71,9 +71,9 @@ int main()
             cui::terminalSize(&newWidth, &newHeight);
             if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
                 bkImage.set("../../asserts/textures/bk.jpeg", static_cast<int32_t>(std::ceil(static_cast<double>(newWidth) / 2.0)), newHeight);
-                for (auto& line : bkImage.get()) {
+                for (auto& line : bkImage.getColorBuffer()) {
                     for (auto& color : line) {
-                        color.value -= 0x00000088;
+                        color -= 0x00000088;
                     }
                 }
                 canvas.resize(newWidth, newHeight);
@@ -96,17 +96,17 @@ int main()
         // Update Canvas
         canvas.clear();
         {
-            canvas.setBkColorBuffer(0, 0, bkImage.getBkColorBuffer());
+            canvas.setBkColorBuffer(0, 0, bkImage.getColorBuffer());
         }
         {
-            canvas.setBkColorBuffer(70, appleOffset, apple.getBkColorBuffer());
+            canvas.setBkColorBuffer(70, appleOffset, apple.getColorBuffer());
             if (++appleOffset == 30) {
                 appleOffset = -30;
             }
         }
         {
             int32_t w = 0;
-            canvas.setBkColorBuffer(w, 0, diamondSword.getBkColorBuffer());
+            canvas.setBkColorBuffer(w, 0, diamondSword.getColorBuffer());
             w += diamondSword.getWidth() + 3;
             canvas.setCharBuffer(w, 0, cui::Text(getCharImage('C')).getCharBuffer());
             w += 14;
@@ -122,7 +122,7 @@ int main()
 
         // Print Canvas
         cui::moveCursorToBeginning();
-        cui::printComponent(canvas.getCharBuffer(), canvas.getFeColorBuffer(), canvas.getBkColorBuffer());
+        cui::print(canvas.getCharBuffer(), canvas.getFeColorBuffer(), canvas.getBkColorBuffer());
        
         // std::this_thread::sleep_for(100ms);
     }

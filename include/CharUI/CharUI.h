@@ -22,13 +22,13 @@ void moveCursorToBeginning();
 char getGlobalPaddingChar();
 void setGlobalPaddingChar(char c);
 
-FeColor getGlobalFeColor();
-void setGlobalFeColor(FeColor newColor);
+Color getGlobalFeColor();
+void setGlobalFeColor(Color newColor);
 
-BkColor getGlobalBkColor();
-void setGlobalBkColor(BkColor newColor);
+Color getGlobalBkColor();
+void setGlobalBkColor(Color newColor);
 
-void printComponent(const std::vector<String>& charBuf, const FeColorBuffer& feColorBuf, const BkColorBuffer& bkColorBuf);
+void print(const std::vector<String>& charBuf, const ColorBuffer& feColorBuf, const ColorBuffer& bkColorBuf);
 
 }
 

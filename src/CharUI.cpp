@@ -2,8 +2,8 @@
 #include <CharUI/Utils/Terminal.h>
 #include <cstdio>
 
-cui::FeColor globalFeColor(0xFFFFFFFF);
-cui::BkColor globalBkColor(0x00000000);
+cui::Color globalFeColor(0xFFFFFFFF);
+cui::Color globalBkColor(0x00000000);
 char globalPaddingChar = ' ';
 
 void cui::hideCursor()
@@ -31,27 +31,27 @@ void cui::setGlobalPaddingChar(char c)
     globalPaddingChar = c;
 }
 
-cui::FeColor cui::getGlobalFeColor()
+cui::Color cui::getGlobalFeColor()
 {
     return globalFeColor;
 }
 
-void cui::setGlobalFeColor(FeColor newColor)
+void cui::setGlobalFeColor(Color newColor)
 {
     globalFeColor = newColor;
 }
 
-cui::BkColor cui::getGlobalBkColor()
+cui::Color cui::getGlobalBkColor()
 {
     return globalBkColor;
 }
 
-void cui::setGlobalBkColor(BkColor newColor)
+void cui::setGlobalBkColor(Color newColor)
 {
     globalBkColor = newColor;
 }
 
-void cui::printComponent(const std::vector<String>& charBuf, const FeColorBuffer& feColorBuf, const BkColorBuffer& bkColorBuf)
+void cui::print(const std::vector<String>& charBuf, const ColorBuffer& feColorBuf, const ColorBuffer& bkColorBuf)
 {
     for (size_t i = 0; i < charBuf.size(); ++i) {
         printf(applyColors(charBuf[i], feColorBuf[i], bkColorBuf[i]).data());
