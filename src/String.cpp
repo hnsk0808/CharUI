@@ -2,7 +2,6 @@
 #include <CharUI/CharUI.h>
 #include <cassert>
 #include <wtswidth/wtswidth.h>
-#include <format>
 
 static size_t utf8CharSize(char firstByte)
 {
@@ -37,17 +36,14 @@ cui::String::String(const String& other) : bytes(other.bytes) {}
 
 cui::String::String(const ConstIterator& first, const ConstIterator& last) : String(Bytes(first.ptr, last.ptr)) {}
 
-cui::String::String(const Bytes& cstr) : bytes(cstr) {
+cui::String::String(BytesView bytesView) : bytes(bytesView)
+{
     for (auto& byte : bytes) {
         if (byte == '\n' || byte == '\t') {
             byte = ' ';
         }
     }
 }
-
-cui::String::String(const char* cstr) : String(Bytes(cstr)) {}
-
-cui::String::String(BytesView bytesView) : String(Bytes(bytesView)) {}
 
 cui::String::String(size_t count, char c) : String(Bytes(count, c)) {}
 
@@ -61,14 +57,16 @@ const char* cui::String::getData() const { return bytes.data(); }
 
 void cui::String::append(const String& other) { bytes += other.bytes; }
 
-void cui::String::insert(const ConstIterator& first, const String& other) { 
+void cui::String::insert(const ConstIterator& first, const String& other) 
+{ 
     assert(first >= begin() && first <= end());
-    bytes.insert(first - begin(), other.getData());
+    bytes.insert(first - begin(), other.bytes);
 }
 
 void cui::String::insert(size_t index, const String& other) { if (auto first = pos(index); first != end()) { insert(first, other); } }
 
-void cui::String::erase(const ConstIterator& first, size_t n) { 
+void cui::String::erase(const ConstIterator& first, size_t n) 
+{ 
     assert(first >= begin() && first <= end()); 
     bytes.erase(first - begin(), pos(first, n) - first);
 }
@@ -103,7 +101,7 @@ cui::String cui::String::takeW(const ConstIterator& first, size_t w) const
     assert(first >= begin() && first <= end());
     if (w == 0) { return {}; }
     auto [last, currentWidth] = wPos1(first, w);
-    return Bytes(first.ptr, last.ptr) + Bytes(w - currentWidth, getGlobalPaddingChar());
+    return { Bytes(first.ptr, last.ptr) + Bytes(w - currentWidth, getGlobalPaddingChar()) };
 }
 
 cui::String cui::String::takeW(size_t index, size_t w) const

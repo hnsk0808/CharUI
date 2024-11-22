@@ -46,10 +46,10 @@ static std::vector<cui::String> getCharImage(char c)
 int main()
 {
     signal(SIGINT, [](int) noexcept {
-        cui::showCursor();
+        cui::setCursorVisible(true);
         exit(0);
         });
-    cui::hideCursor();
+    cui::setCursorVisible(true);
     cui::setGlobalPaddingChar('.');
     cui::setGlobalFeColor(0x222222aa);
     cui::setGlobalBkColor(0xaaddddaa);
@@ -59,7 +59,7 @@ int main()
     cui::Image bkImage;
     cui::Image diamondSword("../../asserts/textures/diamond_sword.png");
     cui::Image apple("../../asserts/textures/apple.png");
-    int32_t appleOffset = 0;
+    int32_t appleY = 0;
     cui::Text fpsText("FPS: 0");
 
     int fps = 0, frameCount = 0;
@@ -67,8 +67,8 @@ int main()
     while (true) {
         // Deal Terminal Resize
         {
-            int32_t newWidth = 0, newHeight = 0;
-            cui::terminalSize(&newWidth, &newHeight);
+            uint32_t newWidth = 0, newHeight = 0;
+            cui::getTerminalSize(&newWidth, &newHeight);
             if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
                 bkImage.set("../../asserts/textures/bk.jpeg", static_cast<int32_t>(std::ceil(static_cast<double>(newWidth) / 2.0)), newHeight);
                 for (auto& line : bkImage.getColorBuffer()) {
@@ -77,7 +77,7 @@ int main()
                     }
                 }
                 canvas.resize(newWidth, newHeight);
-                cui::terminalClear();
+                cui::clearTerminal();
             }
         }
         
@@ -92,31 +92,37 @@ int main()
                 lastTime = currentTime;
             }
         }
+
+        // Update Apple Position
+        if (++appleY == 30) {
+            appleY = -30;
+        }
         
         // Update Canvas
         canvas.clear();
         {
+            // Background image
             canvas.setBkColorBuffer(0, 0, bkImage.getColorBuffer());
         }
         {
-            canvas.setBkColorBuffer(70, appleOffset, apple.getColorBuffer());
-            if (++appleOffset == 30) {
-                appleOffset = -30;
-            }
+            // Apple image
+            canvas.setBkColorBuffer(70, appleY, apple.getColorBuffer());
         }
         {
+            // Banner
             int32_t w = 0;
             canvas.setBkColorBuffer(w, 0, diamondSword.getColorBuffer());
             w += diamondSword.getWidth() + 3;
-            canvas.setCharBuffer(w, 0, cui::Text(getCharImage('C')).getCharBuffer());
+            canvas.setCharBuffer(w, 0, getCharImage('C'));
             w += 14;
-            canvas.setCharBuffer(w, 0, cui::Text(getCharImage('U')).getCharBuffer());
+            canvas.setCharBuffer(w, 0, getCharImage('U'));
             w += 14;
-            canvas.setCharBuffer(w, 0, cui::Text(getCharImage('I')).getCharBuffer());
+            canvas.setCharBuffer(w, 0, getCharImage('I'));
             w += 14;
             canvas.setCharBuffer(w, 0, cui::Text("CharUI是跨平台的控制台UI库😊\nCharUI支持UTF8字符😊").getCharBuffer());
         }
         {
+            // FPS
             canvas.setCharBuffer(0, 16, fpsText.getCharBuffer());
         }
 
@@ -124,7 +130,7 @@ int main()
         cui::moveCursorToBeginning();
         cui::print(canvas.getCharBuffer(), canvas.getFeColorBuffer(), canvas.getBkColorBuffer());
        
-        // std::this_thread::sleep_for(100ms);
+        //std::this_thread::sleep_for(100ms);
     }
     return 0;
 }

@@ -8,16 +8,19 @@
 #include "Component/Canvas.h"
 #include "Component/Image.h"
 #include "Component/Text.h"
-#include "Utils/Terminal.h"
 #include <map>
 #include <memory>
 
 namespace cui
 {
 
-void hideCursor();
-void showCursor();
+bool getCursorVisible();
+void setCursorVisible(bool visible);
+
 void moveCursorToBeginning();
+
+void clearTerminal();
+void getTerminalSize(uint32_t* width, uint32_t* height);
 
 char getGlobalPaddingChar();
 void setGlobalPaddingChar(char c);

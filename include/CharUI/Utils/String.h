@@ -49,8 +49,6 @@ public:
     String();
     String(const String& other);
     String(const ConstIterator& first, const ConstIterator& last);
-    String(const Bytes& cstr);
-    String(const char* cstr);
     String(BytesView bytesView);
     String(size_t count, char c);
 

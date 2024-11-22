@@ -49,19 +49,19 @@ void cui::Canvas::resize(uint32_t w, uint32_t h)
 
 void cui::Canvas::setCharBuffer(int32_t x, int32_t y, const std::vector<String>& charBuf)
 {
-    if (x >= width || y >= height) { return; }
+    if (x >= static_cast<int32_t>(width) || y >= static_cast<int32_t>(height)) { return; }
     uint32_t outHeight = static_cast<uint32_t>(charBuf.size());
     if (outHeight + y > height) {
         outHeight = height - (y >= 0 ? y : 0);
     }
 
     if (x >= 0) {
-        for (int32_t i = (y < 0 ? -y : 0); i < outHeight; ++i) {
+        for (uint32_t i = (y < 0 ? static_cast<uint32_t>(-y) : 0); i < outHeight; ++i) {
             charBuffer[static_cast<size_t>(i + y)].replaceW(x, charBuf[i]);
         }
     }
     else {
-        for (int32_t i = (y < 0 ? -y : 0); i < outHeight; ++i) {
+        for (uint32_t i = (y < 0 ? static_cast<uint32_t>(-y) : 0); i < outHeight; ++i) {
             int32_t srcLineWidth = static_cast<int32_t>(charBuf[i].getWidth());
             if (x + srcLineWidth < 0) {
                 continue;
@@ -73,7 +73,7 @@ void cui::Canvas::setCharBuffer(int32_t x, int32_t y, const std::vector<String>&
 
 void cui::Canvas::setFeColorBuffer(int32_t x, int32_t y, const ColorBuffer& feColorBuf)
 {
-    if (x >= width || y >= height) { return; }
+    if (x >= static_cast<int32_t>(width) || y >= static_cast<int32_t>(height)) { return; }
     for (int32_t i = 0; i < static_cast<int32_t>(feColorBuf.size()); ++i) {
         if (y + i >= static_cast<int32_t>(feColorBuffer.size())) {
             break;
@@ -95,7 +95,7 @@ void cui::Canvas::setFeColorBuffer(int32_t x, int32_t y, const ColorBuffer& feCo
 
 void cui::Canvas::setBkColorBuffer(int32_t x, int32_t y, const ColorBuffer& bkColorBuf)
 {
-    if (x >= width || y >= height) { return; }
+    if (x >= static_cast<int32_t>(width) || y >= static_cast<int32_t>(height)) { return; }
     for (int32_t i = 0; i < static_cast<int32_t>(bkColorBuf.size()); ++i) {
         if (y + i >= static_cast<int32_t>(bkColorBuffer.size())) {
             break;
